@@ -643,5 +643,5 @@ if __name__ == '__main__':
     subplot_pca_wholebrain(traces_df, subfig_expvar, subfig_expvar_zoomin, subfig_pca, subfig_pca_mot, subfig_pca_lumi, subfig_dist, brain_xy_overview_plot, brain_yz_overview_plot)
     subplot_pca_per_region(traces_df, regions_path, regions, subfig_pca_regions, subfig_pca_mot_regions, subfig_pca_lumi_regions, subfig_dist_regions, brain_xy_overview_plot_regions, brain_yz_overview_plot_regions)
 
-    fig.save('C:/users/katja/Desktop/figS3.pdf')
+    fig.save('C:/users/katja/Desktop/figS4.pdf')
 

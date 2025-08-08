@@ -183,7 +183,7 @@ def subfig_PA_functional_loc(subfig, subfig_xy, subfig_yz, PA_data_path, file_ba
 
     return
 
-def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_data_path, all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors, detailed_brain_regions, masks_path, regions_path):
+def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_data_path, all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors, detailed_brain_regions, masks_path, regions_path, video_path=None):
     brain_regions = [navis.read_mesh(fr'{masks_path}\superior_ventral_medulla_oblongata_(entire).obj', units='microns', output='volume'),
                      navis.read_mesh(fr'{masks_path}\mesencephalon_(midbrain).obj', units='microns', output='volume'),
                      navis.read_mesh(fr'{masks_path}\cerebellum.obj', units='microns', output='volume')]
@@ -196,6 +196,8 @@ def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_da
     tectum_mask = create_combined_region_npy_mask(regions_path, regions=['tectum'])
 
     first_set = True
+    all_swc_cells = []
+    all_colors = []
     for type, (volume_file_base_names, cell_folders, swc_ids, plot_color) in enumerate(zip(all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors)):
         swc_cells = []
         for neuron_id, (cell_folder, file_base_name, swc_id) in enumerate(zip(cell_folders, volume_file_base_names, swc_ids)):
@@ -212,6 +214,8 @@ def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_da
             neuron.nodes.iloc[0, 5] = 2
             neuron.soma_radius = 4
             swc_cells.append(navis.smooth_skeleton(neuron))
+            all_swc_cells.append(navis.smooth_skeleton(neuron))
+            all_colors.append(plot_color)
             print(f'NEURON {type} in {detailed_brain_regions[np.array(region_masks[(neuron.soma_pos[0][0] / 0.798).astype(int), 
                                                                             (neuron.soma_pos[0][1] / 0.798).astype(int), 
                                                                             (neuron.soma_pos[0][2] / 2).astype(int)]).astype(int) - 1]}')
@@ -253,6 +257,44 @@ def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_da
         node_counts = np.array(nodes_per_region[type] / np.nansum(nodes_per_region[type], axis=0)).flatten()
         x_ticks = np.repeat(np.arange(len(detailed_brain_regions)), nodes_per_region[type].shape[1])[::-1]
         subfigs_region_counts[subfig_index].draw_scatter(x_ticks[node_counts > 0], node_counts[node_counts>0], pc=color, ec=None)
+
+    if video_path is not None:
+        for i in range(len(all_swc_cells)):
+            all_swc_cells[i].nodes['x'] = 621 * 0.798 - all_swc_cells[i].nodes['x']
+
+        brain_regions = [
+            navis.read_mesh(fr'{masks_path}\rhombencephalon_(hindbrain).obj', units='microns', output='volume'),
+            navis.read_mesh(fr'{masks_path}\mesencephalon_(midbrain).obj', units='microns', output='volume'),
+            navis.read_mesh(fr'{masks_path}\prosencephalon_(forebrain).obj', units='microns', output='volume')]
+
+        dpi = 300
+        force_new = True
+        fig, ax = navis.plot2d(all_swc_cells + brain_regions, linewidth=0.5, method='3d_complex', color=all_colors, figsize=(3, 5), autoscale=True, view=('x', '-y'))
+        fig.set_dpi(dpi)
+        ax.set_xlim(0, 500)
+        ax.set_ylim(0, 1122)
+        ax.set_zlim(0, 276)
+        ax.set_axis_off()
+        ax.set_box_aspect([276, 496, 1122])
+        fig.set_layout_engine("none")
+        ax.set_position([-0.5, -0.6, 2., 2.])
+        ax.set_facecolor("none")
+
+        frames = []
+        frames_filenames = []
+        for i in range(0, 360, 2):
+            frame_filename = rf"{video_path}\temp_img\frame_{i}_PAed_neurons.jpg"
+            frames_filenames.append(frame_filename)
+            if force_new or not Path(frame_filename).exists():
+                ax.view_init(0, i, 180, vertical_axis='y')
+                ax.dist = 2.5
+                plt.savefig(frame_filename, dpi=dpi)
+                if i == 0:
+                    plt.savefig(rf"{video_path}\temp_img\frame_{i}_PAed_neurons.pdf", dpi=600)
+                print("loading", frame_filename)
+            temp_image = np.array(Image.open(frame_filename))
+            frames.append(temp_image)
+        imageio.mimsave(f"{video_path}/spinning_brain/PAed_neurons.mp4", frames, fps=30, codec="libx264", output_params=["-crf", "20"])
 
     return
 
@@ -596,14 +638,13 @@ def mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum
         yz_plot.draw_navis_neuron(subset_swc_cells_tectum, [], navis_view=('z', '-y'), lc='k', lw=0.25, rasterized=True)
 
         xy_plot.draw_line([311 * 0.798, 311 * 0.798], [100 * 0.798, 1006 * 0.798], lc='w')
+        xy_plot.draw_text(0, -10, name)
 
         if do_video:
+            print('Creating movie...')
             if flip:
                 for i in range(len(subset_swc_cells_ahb)):
                     subset_swc_cells_ahb[i].nodes['x'] = 621 * 0.798 - subset_swc_cells_ahb[i].nodes['x']
-            xy_plot.draw_text(0, -10, name)
-
-            print('Creating movie...')
 
             dpi = 300
             force_new = True
@@ -649,7 +690,7 @@ def mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum
 
 
 if __name__ == '__main__':
-    fig = Figure(fig_width=18, fig_height=17)
+    fig = Figure(fig_width=18, fig_height=17, dpi=900)
     supfig = Figure(fig_width=9, fig_height=17)
     mapzebrain_nrrd_paths = [r'C:/Users/katja/Desktop/region_cut_motion left.nrrd',
                              r'C:/Users/katja/Desktop/region_cut_drive left.nrrd',
@@ -662,7 +703,9 @@ if __name__ == '__main__':
     path_to_swc_folder_tectum = r'C:\Users\Katja\Downloads\Soma_in_mapzebrain_tectum'
     masks_path = r'Z:\Zebrafish atlases\z_brain_atlas\region_masks_mapzebrain_atlas2024'
     regions_path = r'Z:\Zebrafish atlases\z_brain_atlas\region_masks_mapzebrain_atlas2024\all_masks_indexed.hdf5'
-    video_path = r'C:\Users\Katja\Desktop\zbrain_mesh_mapzebrain'
+    video_path_PA = fr'C:\Users\Katja\Desktop\rotating_brain'
+    video_path_PA = None
+    video_path_MZB = r'C:\Users\Katja\Desktop\zbrain_mesh_mapzebrain'
 
     nrrd_plot = fig.create_plot(xpos=0.1, ypos=14.25, plot_height=2.3, plot_width=2.3, axis_off=True, xmin=30, xmax=800, ymin=850, ymax=80)
 
@@ -674,7 +717,7 @@ if __name__ == '__main__':
         xy_plots[i] = fig.create_plot(xpos=3.75 + i*3.25, ypos=14.25, plot_height=2.3, plot_width=2.3*1.5525, axis_off=True)
         yz_plots[i] = fig.create_plot(xpos=5.55 + i*3.25, ypos=14.25, plot_height=2.3, plot_width=2.3/1.1565, axis_off=True)
 
-    mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum, mapzebrain_nrrd_paths, nrrd_plot, all_neurons_xy, all_neurons_yz, xy_plots, yz_plots, masks_path, regions_path, do_video=False, movie_path=video_path)
+    mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum, mapzebrain_nrrd_paths, nrrd_plot, all_neurons_xy, all_neurons_yz, xy_plots, yz_plots, masks_path, regions_path, do_video=False, movie_path=video_path_MZB)
 
     PA_data_path = r'Y:\M11 2P microscopes\Katja\PA'
     example_func_path = fr'{PA_data_path}\20250128-2\2025-01-28_13-21-48_fish002_setup0_arena0_KS\2025-01-28_13-21-48_fish002_setup0_arena0_KS_preprocessed_data.h5'
@@ -913,7 +956,7 @@ if __name__ == '__main__':
     subfig_PA_functional_loc(bright_functional_plot, bright_xy_plot, bright_yz_plot,  PA_data_path, bright_file_base_names, bright_volume_file_base_names, bright_cell_folders, bright_cell_mask_IDs, bright_swc_ids, masks_path, z_planes=bright_z_planes, plot_color='#F748A5', plot_color_2='#F7A4D0')
     subfig_PA_functional_loc(dark_functional_plot, dark_xy_plot, dark_yz_plot,  PA_data_path, dark_file_base_names, dark_volume_file_base_names, dark_cell_folders, dark_cell_mask_IDs, dark_swc_ids, masks_path, z_planes=dark_z_planes, plot_color='#9F0162', plot_color_2='#CC7CAD', timescalebar=True)
 
-    subfig_all_PA_neurons_loc(all_neurons_xy_plot, all_neurons_yz_plot, brain_region_plots, PA_data_path, all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors, detailed_brain_regions, masks_path, regions_path)
+    subfig_all_PA_neurons_loc(all_neurons_xy_plot, all_neurons_yz_plot, brain_region_plots, PA_data_path, all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors, detailed_brain_regions, masks_path, regions_path, video_path=video_path_PA)
 
     subfig_group_of_neurons(anterior_xy_mot_plot, anterior_yz_mot_plot, contralateral_xy_mot_plot, contralateral_yz_mot_plot, local_xy_mot_plot, local_yz_mot_plot,
                          anterior_vs_contra_count_plot, 2, PA_data_path, mot_volume_file_base_names, mot_cell_folders, mot_swc_ids, mot_type, '#359B73', masks_path)
@@ -925,4 +968,4 @@ if __name__ == '__main__':
                           zoomin_volume_file_base_names, zoomin_cell_folders, zoomin_swc_ids, zoomin_types, zoomin_plot_colors)
 
     fig.save('C:/users/katja/Desktop/fig5.pdf')
-    supfig.save('C:/users/katja/Desktop/subfig5.pdf')
+    supfig.save('C:/users/katja/Desktop/sup_figS6.pdf')

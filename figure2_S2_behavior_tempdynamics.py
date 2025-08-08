@@ -648,6 +648,91 @@ def sub_plot_modelling_example_traces(plot_model_ADD_example, plot_model_ADD_onl
 
     return
 
+def sub_plot_example_traces_model_fit(path_to_analysed_data, subfiga, subfigb):
+    model_params = [8, 52, 13, 11, 3.9, 0.9, 4]
+    subfiga.draw_line([0, 1150], [50, 50], lc='w', lw=1.5)
+    subfigb.draw_line([0, 1150], [50, 50], lc='w', lw=1.5)
+
+    analysed_df = pd.read_hdf(path_to_analysed_data)
+
+    stim_names = ['Mot', 'Lumi', 'Same', 'Oppo']
+    x_starts = [0, 300, 600, 900, 1200, 1500, 1800, 2100]
+    for st, x_start in zip(stim_names, x_starts):
+        stim = f'{st} W'
+        stim_df = analysed_df.xs(stim, level='stimulus_name')
+        n_fish = len(stim_df.index.unique('experiment_ID'))
+        grouped_df = stim_df.groupby('window_time')
+
+        mean = grouped_df['percentage_left'].mean()[0.5:]
+        std = grouped_df['percentage_left'].std()[0.5:]
+        sem = std / np.sqrt(n_fish)
+        binned_time = mean.index.unique('window_time') * 10 + x_start
+
+        subfiga.draw_line(x=binned_time, y=mean*100, yerr=sem*100, lc='#676767', eafc='#989898', eaalpha=1.0, lw=1, ealw=1, eaec='#989898')
+
+        stim = f'{st} B'
+        stim_df = analysed_df.xs(stim, level='stimulus_name')
+        n_fish = len(stim_df.index.unique('experiment_ID'))
+        grouped_df = stim_df.groupby('window_time')
+
+        mean = grouped_df['percentage_left'].mean()[0.5:]
+        std = grouped_df['percentage_left'].std()[0.5:]
+        sem = std / np.sqrt(n_fish)
+        binned_time = mean.index.unique('window_time') * 10 + x_start
+
+        subfigb.draw_line(x=binned_time, y=mean*100, yerr=sem*100, lc='k', eafc='#404040', alpha=0.5, eaalpha=0.5, lw=1, ealw=1, eaec='#404040')
+
+    folder_names_test = ['beh_simultaneous_blackwhite_white',  # simultaneous white
+                         ]
+    stim_len_timepoints_test = np.array([250])
+    stim_names_test = ['Motion', 'Photo', 'Same', 'Oppo']
+
+    testing_folder_ids = np.array([0, 0, 0, 0])
+    testing_stim_ids = np.array([0, 1, 2, 3, 0, 1, 2, 3])
+
+    # model_params, model_train_mse, _ = train_model_full(model_func=avg_mot_lumi_change,
+    #                                                     folder_names=folder_names_test,
+    #                                                     stim_len_timepoints=stim_len_timepoints_test,
+    #                                                     stim_names=stim_names_test,
+    #                                                     subfig=None,
+    #                                                     train_loops=10)
+    #
+    # model_params = np.array(model_params).reshape(-1, 7)
+    # print(np.nanmedian(model_params, axis=0))
+    test_model_once(model_func=avg_mot_lumi_change,
+                    params=model_params,
+                    folder_names=folder_names_test,
+                    stim_len_timepoints=stim_len_timepoints_test,
+                    stim_names=stim_names_test,
+                    subfig_data=None,
+                    subfig_model=subfiga,
+                    training_folder_ids=testing_folder_ids,
+                    pick_stim_ids=testing_stim_ids,
+                    pl_color='cyan')
+
+    folder_names_test = ['beh_simultaneous_blackwhite_black',  # simultaneous black
+                         ]
+    stim_len_timepoints_test = np.array([250])
+    stim_names_test = ['Motion', 'Photo', 'Same', 'Oppo']
+
+    testing_folder_ids = np.array([0, 0, 0, 0])
+    testing_stim_ids = np.array([0, 1, 2, 3, 0, 1, 2, 3])
+
+    test_model_once(model_func=avg_mot_lumi_change,
+                    params=model_params,
+                    folder_names=folder_names_test,
+                    stim_len_timepoints=stim_len_timepoints_test,
+                    stim_names=stim_names_test,
+                    subfig_data=None,
+                    subfig_model=subfigb,
+                    training_folder_ids=testing_folder_ids,
+                    pick_stim_ids=testing_stim_ids,
+                    pl_color='cyan')
+
+    subfigb.draw_line([1100, 1150], [22, 22], lc='k')
+    subfigb.draw_text(1125, 15, '5s')
+    return
+
 def sub_plot_modelling_overview_mse_tau_w(n_training_rounds, subfig_mse_btm, subfig_mse_top, subfig_tau, subfig_w):
     folder_names_half = ['converted_phototaxis_dotmotion_integration_simultaneous_white',  # Simultaneous
                         'phototaxis_dotmotion_white_Sep',  # White
@@ -813,6 +898,7 @@ if __name__ == '__main__':
     xticks = [0, 5, 20, 25]
     vspans = [[5, 20, 'lightgray', 1.0], ]
     fig = Figure(fig_width=18, fig_height=17)
+    subfig = Figure(fig_width=18, fig_height=6)
     plot_motion = fig.create_plot(xpos=1, ypos=13.5, plot_height=2, plot_width=3.5, errorbar_area=True,
                                   xmin=0, xmax=25, yl='Left swims (%)', ymin=0.25,
                                   ymax=0.9, yticks=[0.30, 0.50, 0.70, 0.90], yticklabels=['30', '50', '70', '90'], hlines=[0.5],
@@ -840,6 +926,16 @@ if __name__ == '__main__':
     plot_model_data_example = fig.create_plot(xpos=1, ypos=6.5, plot_height=1.4, plot_width=7, errorbar_area=True,
                                                xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[25, 50, 75], yl='Left swims (%)')
 
+
+    plot_white_example = subfig.create_plot(xpos=1, ypos=0.5, plot_height=1.4, plot_width=7.5, errorbar_area=True,
+                                                 xmin=0, xmax=1150, ymin=20, ymax=90, yticks=[25, 50, 75], yl='Left swims (%)',
+                                                 vspans=[[50, 200, 'lightgray', 1.0], [350, 500, 'lightgray', 1.0], [650, 800, 'lightgray', 1.0], [950, 1100, 'lightgray', 1.0]])
+    plot_black_example = subfig.create_plot(xpos=9.5, ypos=0.5, plot_height=1.4, plot_width=7.5, errorbar_area=True,
+                                                 xmin=0, xmax=1150, ymin=20, ymax=90, yticks=[25, 50, 75],
+                                                 vspans=[[50, 200, 'lightgray', 1.0], [350, 500, 'lightgray', 1.0], [650, 800, 'lightgray', 1.0], [950, 1100, 'lightgray', 1.0]])
+
+    sub_plot_example_traces_model_fit(path_to_analysed, plot_white_example, plot_black_example)
+
     plot_mse_overview_bottom = fig.create_plot(xpos=9, ypos=7.5, plot_height=1.25, plot_width=2.25,
                                         xmin=-1, xmax=5, ymin=0, ymax=75, yticks=[10, 20, 30, 40, 50], yl='MSE',
                                         xticks=[0, 1, 2, 3, 4], xticklabels=['multifeature\ntesting', 'unifeature\ntesting', 'X lumi change',
@@ -866,4 +962,5 @@ if __name__ == '__main__':
     print('Plotting model overview')
     sub_plot_modelling_overview_mse_tau_w(n_training_rounds=25, subfig_mse_btm=plot_mse_overview_bottom, subfig_mse_top=plot_mse_overview_top, subfig_tau=plot_timeconstants_overview, subfig_w=plot_weights_overview)  #25 rounds
 
-    fig.save('C:/users/katja/Desktop/fig2_test.pdf')
+    fig.save('C:/users/katja/Desktop/fig2.pdf')
+    subfig.save('C:/users/katja/Desktop/figS2.pdf')

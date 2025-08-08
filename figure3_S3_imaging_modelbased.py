@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 import pandas as pd
 from scipy.stats import linregress
-from multifeature_integration_paper.figure_helper import Figure
+from analysis_helpers.analysis.utils.figure_helper import Figure
 from scipy.ndimage import convolve1d
 from matplotlib import cm
 from matplotlib.colors import ListedColormap
@@ -1360,7 +1360,7 @@ if __name__ == '__main__':
     print('Traces are loaded. ')
 
     fig = Figure(fig_width=18, fig_height=17)
-    sup_fig_2 = Figure(fig_width=18, fig_height=17)
+    sup_fig_3 = Figure(fig_width=18, fig_height=17)
 
     example_stack_plot = fig.create_plot(xpos=3.75, ypos=14.9, plot_height=2, plot_width=2, axis_off=True,
                                          xmin=0, xmax=1150, ymin=1150, ymax=0)
@@ -1380,9 +1380,9 @@ if __name__ == '__main__':
 
     subfigs_traces = create_traces_subplots(fig)
 
-    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_2, x_l=4.2, y_t=7.2, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
-    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_2, x_l=4.2, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
-    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_2, x_l=13.1, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
+    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_3, x_l=4.2, y_t=7.2, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
+    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_3, x_l=4.2, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
+    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_3, x_l=13.1, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
 
     subfigs_locs = create_locs_subplots(fig)
 
@@ -1391,11 +1391,11 @@ if __name__ == '__main__':
     loc_comb_s_plot = fig.create_plot(xpos=3.25, ypos=4.5, plot_height=3, plot_width=3, axis_off=True,
                                     xmin=30, xmax=800, ymin=850, ymax=80)
 
-    sup_loc_comb_plot_linreg = sup_fig_2.create_plot(xpos=0.1, ypos=9.2, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_linreg = sup_fig_3.create_plot(xpos=0.1, ypos=9.2, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
-    sup_loc_comb_plot_ctrl = sup_fig_2.create_plot(xpos=14.8, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_ctrl = sup_fig_3.create_plot(xpos=14.8, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
                                                    xmin=30, xmax=800, ymin=850, ymax=80)
-    sup_loc_comb_plot_wta = sup_fig_2.create_plot(xpos=9.1, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_wta = sup_fig_3.create_plot(xpos=9.1, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
 
     n_neurons_plot = fig.create_plot(xpos=1, ypos=2.2, plot_height=2.25, plot_width=5.25,
@@ -1403,16 +1403,16 @@ if __name__ == '__main__':
                                      xticks=[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20, 21, 22,],
                                      xticklabels=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',],
                                      yticks=[0, 25, 50, 75, 100], yl='Neurons per region')
-    perc_neurons_plot_bottom = sup_fig_2.create_plot(xpos=1, ypos=2.2, plot_height=2.5, plot_width=16.75, #5.25
+    perc_neurons_plot_bottom = sup_fig_3.create_plot(xpos=1, ypos=2.2, plot_height=2.5, plot_width=16.75, #5.25
                                          xmin=-1, xmax=91, ymin=0, ymax=2,
                                          xticks=np.arange(90),
                                          xticklabels=regions_short_names * 6,
                                          yticks=[0, 0.5, 1.0, 1.5, 2.0], yl='Neurons per region (%)', xticklabels_rotation=90)
-    perc_neurons_plot_top = sup_fig_2.create_plot(xpos=1, ypos=4.7, plot_height=0.7, plot_width=16.75, #5.25
+    perc_neurons_plot_top = sup_fig_3.create_plot(xpos=1, ypos=4.7, plot_height=0.7, plot_width=16.75, #5.25
                                          xmin=-2, xmax=92, ymin=2, ymax=12,
                                          yticks=[5, 10,])
 
-    sup_subfigoverlap = sup_fig_2.create_plot(xpos=10, ypos=11.1, plot_height=5.1, plot_width=2.2,
+    sup_subfigoverlap = sup_fig_3.create_plot(xpos=10, ypos=11.1, plot_height=5.1, plot_width=2.2,
                                               xmin=-1, xmax=8, ymin=0, ymax=1200,
                                               yticks=[0, 250, 500, 750, 1000],
                                               xticks=[0, 1, 3, 4, 6, 7],
@@ -1435,7 +1435,7 @@ if __name__ == '__main__':
     sub_plot_add_model_prediction_to_traces(sup_subfigs_traces_wta, model_params, wta=True)
 
     fig.save('C:/users/katja/Desktop/fig3.pdf')
-    sup_fig_2.save('C:/users/katja/Desktop/sup_fig3test.pdf')
+    sup_fig_3.save('C:/users/katja/Desktop/sup_fig3.pdf')
 
 
 

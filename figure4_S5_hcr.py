@@ -740,4 +740,4 @@ if __name__ == '__main__':
                        HCR_subfigs_traces_gad, HCR_subfigs_traces_Glut, HCR_subfigs_locs_gad, HCR_subfigs_locs_Glut)
 
     hcr_fig.save('C:/users/katja/Desktop/fig4.pdf')
-    hcr_supfig.save('C:/users/katja/Desktop/subfig4.pdf')
+    hcr_supfig.save('C:/users/katja/Desktop/sup_figS5.pdf')
