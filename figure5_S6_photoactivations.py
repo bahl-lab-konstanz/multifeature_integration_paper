@@ -334,9 +334,9 @@ def subfig_group_of_neurons(anterior_xy_plot, anterior_yz_plot, contralateral_xy
     n_anterior = np.sum(np.array(type) == 2)
     n_tot = len(type)
     if ant_contr_x_loc == 1:
-        plot_colors = ['#93BADA', '#2271B2', '#C0DFF8']
+        plot_colors = ['#6E9FC8', '#2271B2', '#C0DFF8']
     else:
-        plot_colors = ['#8DCDB4', '#359B73', '#C7F2E1', ]
+        plot_colors = ['#6AB799', '#359B73', '#C7F2E1', ]
     ant_contr_plot.draw_vertical_bars([ant_contr_x_loc, ant_contr_x_loc, ant_contr_x_loc],
                                       [n_local/n_tot, n_contra/n_tot, n_anterior/n_tot], vertical_bar_bottom=[0, n_local/n_tot, (n_local+n_contra)/n_tot],
                                       lc=plot_colors)
