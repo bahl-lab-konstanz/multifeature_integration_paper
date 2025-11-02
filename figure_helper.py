@@ -897,6 +897,14 @@ class SuperPlot():
                                  capsize=artist_dict["elw"] * 1.5, rasterized=artist_dict["rasterized"],
                                  mew=artist_dict["elw"], solid_capstyle='round', solid_joinstyle='round', zorder=self.current_zorder)
 
+        if artist_dict["label"] is not None:
+            leg = self.ax.legend(frameon=False, loc='upper left', bbox_to_anchor=(
+                artist_dict["legend_xpos"] / artist_dict["fig_width"], artist_dict["legend_ypos"] / artist_dict["fig_height"]),
+                                    bbox_transform=self.figure.fig.transFigure)
+
+            for text in leg.get_texts():
+                plt.setp(text, color=artist_dict["textcolor"])
+
     def draw_swarmplot(self, ys, **opts_dict):
 
         artist_dict = self.plot_dict.copy()

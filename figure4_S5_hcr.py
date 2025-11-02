@@ -6,8 +6,18 @@ from scipy.stats import ttest_ind
 import nrrd
 from matplotlib.colors import ListedColormap
 
-def create_locs_subplots(fig, x_l=10.5, y_t=8.5, x_bs=5.4, y_bs = 3.5, wta=False):
+def create_locs_subplots(fig, x_l=10.5, y_t=8.5, x_bs=5.4, y_bs = 3.5):
+    '''
+    This function creates a list of 6 subfigures in which the location of neurons in ZBRAIN reference frame can be plotted.
+    :param fig: Figure to which the subfigures belong.
+    :param x_l: Left-most x coordinate of the subfigures.
+    :param y_t: Top-most y coordinate of the subfigures.
+    :param x_bs: Big-step size in x between the functional types.
+    :param y_bs: Big-step size in y between the functional types.
+    :return: List of 6 subfigures.
+    '''
 
+    # Create the six subfigures
     motion_locs_plot = fig.create_plot(xpos=x_l, ypos=y_t, plot_height=2, plot_width=2, axis_off=True,
                                           xmin=30, xmax=800, ymin=850, ymax=80,
                                        legend_xpos=x_l-2.75, legend_ypos=y_t+2.75)
@@ -15,29 +25,36 @@ def create_locs_subplots(fig, x_l=10.5, y_t=8.5, x_bs=5.4, y_bs = 3.5, wta=False
                                           xmin=30, xmax=800, ymin=850, ymax=80,
                                        legend_xpos=x_l+x_bs-2.75, legend_ypos=y_t+2.75)
 
-    if not wta:
-        dark_locs_plot = fig.create_plot(xpos=x_l, ypos=y_t - y_bs, plot_height=2, plot_width=2, axis_off=True,
-                                         xmin=30, xmax=800, ymin=850, ymax=80,
-                                         legend_xpos=x_l - 2.75, legend_ypos=y_t - y_bs + 2.75)
-        bright_locs_plot = fig.create_plot(xpos=x_l + x_bs, ypos=y_t - y_bs, plot_height=2, plot_width=2, axis_off=True,
-                                           xmin=30, xmax=800, ymin=850, ymax=80,
-                                           legend_xpos=x_l + x_bs - 2.75, legend_ypos=y_t - y_bs + 2.75)
-        drive_locs_plot = fig.create_plot(xpos=x_l+x_bs+x_bs, ypos=y_t-y_bs, plot_height=2, plot_width=2, axis_off=True,
-                                              xmin=30, xmax=800, ymin=850, ymax=80,
-                                           legend_xpos=x_l+x_bs-2.75, legend_ypos=y_t-y_bs-y_bs+2.75)
-        diff_locs_plot = fig.create_plot(xpos=x_l+x_bs+x_bs, ypos=y_t, plot_height=2, plot_width=2, axis_off=True,
-                                              xmin=30, xmax=800, ymin=850, ymax=80,
-                                           legend_xpos=x_l-2.75, legend_ypos=y_t-y_bs-y_bs+2.75)
+    dark_locs_plot = fig.create_plot(xpos=x_l, ypos=y_t - y_bs, plot_height=2, plot_width=2, axis_off=True,
+                                     xmin=30, xmax=800, ymin=850, ymax=80,
+                                     legend_xpos=x_l - 2.75, legend_ypos=y_t - y_bs + 2.75)
+    bright_locs_plot = fig.create_plot(xpos=x_l + x_bs, ypos=y_t - y_bs, plot_height=2, plot_width=2, axis_off=True,
+                                       xmin=30, xmax=800, ymin=850, ymax=80,
+                                       legend_xpos=x_l + x_bs - 2.75, legend_ypos=y_t - y_bs + 2.75)
+    drive_locs_plot = fig.create_plot(xpos=x_l+x_bs+x_bs, ypos=y_t-y_bs, plot_height=2, plot_width=2, axis_off=True,
+                                          xmin=30, xmax=800, ymin=850, ymax=80,
+                                       legend_xpos=x_l+x_bs-2.75, legend_ypos=y_t-y_bs-y_bs+2.75)
+    diff_locs_plot = fig.create_plot(xpos=x_l+x_bs+x_bs, ypos=y_t, plot_height=2, plot_width=2, axis_off=True,
+                                          xmin=30, xmax=800, ymin=850, ymax=80,
+                                       legend_xpos=x_l-2.75, legend_ypos=y_t-y_bs-y_bs+2.75)
 
-        subfigs_locs = [motion_locs_plot, lumi_locs_plot, dark_locs_plot, bright_locs_plot, drive_locs_plot, diff_locs_plot]
-    else:
-        subfigs_locs = [motion_locs_plot, lumi_locs_plot,]
-
+    subfigs_locs = [motion_locs_plot, lumi_locs_plot, dark_locs_plot, bright_locs_plot, drive_locs_plot, diff_locs_plot]
 
     return subfigs_locs
 
 def create_traces_simple_subplots(fig, x_l=7.5, y_t=10., x_ss=1, y_ss=1, ymax_extra=0):
+    '''
+    This function creates a list of 9 subfigures to show the activity traces of a single functional type.
+    :param fig: Figure to which the subfigures belong.
+    :param x_l: Left-most x position of the subfigures.
+    :param y_t: Top-most y position of the subfigures.
+    :param x_ss: Small-step size in x between the stimulus panels.
+    :param y_ss: Small-step size in y between the stimulus panels.
+    :param ymax_extra: To change the default y-axis range.
+    :return: List of 9 subfigures for activity traces.
+    '''
 
+    # Create the 9 subfigures.
     traces_plota = fig.create_plot(xpos=x_l, ypos=y_t, plot_height=0.45, plot_width=0.75, axis_off=True,
                                           xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
@@ -70,198 +87,212 @@ def create_traces_simple_subplots(fig, x_l=7.5, y_t=10., x_ss=1, y_ss=1, ymax_ex
                     traces_ploti]
     return traces_plots
 
-def create_traces_subplots(fig, x_l=7.5, y_t=10., x_ss=1, x_bs=5.40, y_ss=1, y_bs=3.5, wta=False, ymax_extra=0):
+def create_traces_subplots(fig, x_l=7.5, y_t=10., x_ss=1, x_bs=5.40, y_ss=1, y_bs=3.5):
+    '''
+    This function create a list of 6 lists of 9 subfigures to show the functional activity traces.
+    :param fig: Figure to which the activity traces belong.
+    :param x_l: Left-most x coordinate of the activity traces.
+    :param y_t: Top-most y coordinate of the activity traces.
+    :param x_ss: Small-step size in x between the stimuli panels.
+    :param x_bs: Big-step size in x between the functional types.
+    :param y_ss: Small-step size in y between the stimuli panels.
+    :param y_bs: Big-step size in y between the functional types.
+    :return: List of 6 lists of 9 subfigures.
+    '''
 
+    # Create the motion integrator subfigures.
     motion_traces_plota = fig.create_plot(xpos=x_l, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plotb = fig.create_plot(xpos=x_l+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plotc = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plotd = fig.create_plot(xpos=x_l, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plote = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plotf = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plotg = fig.create_plot(xpos=x_l, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_ploth = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_ploti = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     motion_traces_plots = [motion_traces_plota, motion_traces_plotb, motion_traces_plotc, motion_traces_plotd,
                            motion_traces_plote, motion_traces_plotf, motion_traces_plotg, motion_traces_ploth,
                            motion_traces_ploti]
 
+    # Create the luminance integrator subfigures.
     lumi_traces_plota = fig.create_plot(xpos=x_l+x_bs, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plotb = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plotc = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plotd = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plote = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plotf = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plotg = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_ploth = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_ploti = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8 + ymax_extra,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
     lumi_traces_plots = [lumi_traces_plota, lumi_traces_plotb, lumi_traces_plotc, lumi_traces_plotd,
                         lumi_traces_plote, lumi_traces_plotf, lumi_traces_plotg, lumi_traces_ploth,
                         lumi_traces_ploti]
 
-    if not wta:
-        dark_traces_plota = fig.create_plot(xpos=x_l, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plotb = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plotc = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plotd = fig.create_plot(xpos=x_l, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plote = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plotf = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plotg = fig.create_plot(xpos=x_l, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_ploth = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_ploti = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        dark_traces_plots = [dark_traces_plota, dark_traces_plotb, dark_traces_plotc, dark_traces_plotd,
-                               dark_traces_plote, dark_traces_plotf, dark_traces_plotg, dark_traces_ploth,
-                               dark_traces_ploti]
+    # Create the luminance decrease detector subfigures.
+    dark_traces_plota = fig.create_plot(xpos=x_l, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plotb = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plotc = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plotd = fig.create_plot(xpos=x_l, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plote = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plotf = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plotg = fig.create_plot(xpos=x_l, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_ploth = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_ploti = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    dark_traces_plots = [dark_traces_plota, dark_traces_plotb, dark_traces_plotc, dark_traces_plotd,
+                           dark_traces_plote, dark_traces_plotf, dark_traces_plotg, dark_traces_ploth,
+                           dark_traces_ploti]
 
-        bright_traces_plota = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plotb = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plotc = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plotd = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plote = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plotf = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plotg = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_ploth = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_ploti = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        bright_traces_plots = [bright_traces_plota, bright_traces_plotb, bright_traces_plotc, bright_traces_plotd,
-                             bright_traces_plote, bright_traces_plotf, bright_traces_plotg, bright_traces_ploth,
-                             bright_traces_ploti]
+    # Create the luminance increase detector subfigures.
+    bright_traces_plota = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plotb = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plotc = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plotd = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plote = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plotf = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plotg = fig.create_plot(xpos=x_l+x_bs, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_ploth = fig.create_plot(xpos=x_l+x_bs+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_ploti = fig.create_plot(xpos=x_l+x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    bright_traces_plots = [bright_traces_plota, bright_traces_plotb, bright_traces_plotc, bright_traces_plotd,
+                         bright_traces_plote, bright_traces_plotf, bright_traces_plotg, bright_traces_ploth,
+                         bright_traces_ploti]
 
-        drive_traces_plota = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plotb = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plotc = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plotd = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plote = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plotf = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plotg = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_ploth = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_ploti = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                              xmin=-5, xmax=62, ymin=-0.35, ymax=1.1 + ymax_extra,
-                                              vspans=[[10, 40, 'lightgray', 1.0], ])
-        drive_traces_plots = [drive_traces_plota, drive_traces_plotb, drive_traces_plotc, drive_traces_plotd,
-                               drive_traces_plote, drive_traces_plotf, drive_traces_plotg, drive_traces_ploth,
-                               drive_traces_ploti]
+    # Create the multifeature integrator subfigures.
+    drive_traces_plota = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plotb = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plotc = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plotd = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plote = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plotf = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plotg = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_ploth = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_ploti = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_bs-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=1.1,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    drive_traces_plots = [drive_traces_plota, drive_traces_plotb, drive_traces_plotc, drive_traces_plotd,
+                           drive_traces_plote, drive_traces_plotf, drive_traces_plotg, drive_traces_ploth,
+                           drive_traces_ploti]
 
-        diff_traces_plota = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plotb = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plotc = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plotd = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plote = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plotf = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plotg = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_ploth = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_ploti = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
-                                            xmin=-5, xmax=62, ymin=-0.35, ymax=1,
-                                            vspans=[[10, 40, 'lightgray', 1.0], ])
-        diff_traces_plots = [diff_traces_plota, diff_traces_plotb, diff_traces_plotc, diff_traces_plotd,
-                             diff_traces_plote, diff_traces_plotf, diff_traces_plotg, diff_traces_ploth,
-                             diff_traces_ploti]
+    # Create the luminance change detector subfigures.
+    diff_traces_plota = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plotb = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plotc = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plotd = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plote = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plotf = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plotg = fig.create_plot(xpos=x_l+2*x_bs, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_ploth = fig.create_plot(xpos=x_l+2*x_bs+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_ploti = fig.create_plot(xpos=x_l+2*x_bs+x_ss+x_ss, ypos=y_t-y_ss-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                        xmin=-5, xmax=62, ymin=-0.35, ymax=1,
+                                        vspans=[[10, 40, 'lightgray', 1.0], ])
+    diff_traces_plots = [diff_traces_plota, diff_traces_plotb, diff_traces_plotc, diff_traces_plotd,
+                         diff_traces_plote, diff_traces_plotf, diff_traces_plotg, diff_traces_ploth,
+                         diff_traces_ploti]
 
-        subfigs_traces = [motion_traces_plots, lumi_traces_plots, dark_traces_plots, bright_traces_plots, drive_traces_plots, diff_traces_plots]
-    else:
-        subfigs_traces = [motion_traces_plots, lumi_traces_plots]
+    subfigs_traces = [motion_traces_plots, lumi_traces_plots, dark_traces_plots, bright_traces_plots, drive_traces_plots, diff_traces_plots]
 
     return subfigs_traces
 
@@ -269,9 +300,25 @@ def subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example
                               example_stack_GC_plot_HCR, example_stack_gad_vglut_plot_HCR,
                               example_loc_plot_overlap, example_loc_plot_GC, example_loc_plot_gad, example_loc_plot_Glut,
                               example_plane):
+    '''
+    This function shows the HCR example stacks of a single fish.
+    This is related to Fig. 4a-b.
+    :param example_GC_path_HCR: Path to the GCaMP example stack.
+    :param example_gad_path_HCR: Path to the Gad example stack.
+    :param example_Glut_path_HCR: Path to the vGlut example stack.
+    :param example_stack_GC_plot_HCR: subfigure to show the example Gcamp stack
+    :param example_stack_gad_vglut_plot_HCR: Subfigure to show the Gad/Vglut example stack.
+    :param example_loc_plot_overlap: Subfigure to show the Gad/vGlut/GCaMP example detailed overlay
+    :param example_loc_plot_GC: Subfigure to show the small GCaMP plane in gray.
+    :param example_loc_plot_gad: Subfigure to show the small gad plane in gray.
+    :param example_loc_plot_Glut: Subfigure to show the small vglut plane in gray.
+    :param example_plane: Example plane ID.
+    '''
+    # Load the three example stacks.
     GC_stack = nrrd.read(example_GC_path_HCR)[0]
     gad_stack = nrrd.read(example_gad_path_HCR)[0]
     Glut_stack = nrrd.read(example_Glut_path_HCR)[0]
+    # Set the brightness scaling for better visualization.
     GC_low = 100
     GC_high = 6000
     gad_low = 50
@@ -279,17 +326,22 @@ def subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example
     Glut_low = 250
     Glut_high = 500
 
+    # Loop over 5 example planes to be stacked in Fig. 4a.
     for z, offset in zip(range(5), [0, 50, 250, 300, 350]):
+        # Draw the planes with a white outline.
         example_stack_GC_plot_HCR.draw_image(np.clip(GC_stack[:, :, z*6].T, GC_low, GC_high), colormap='gray',
                            extent=(offset, 800 + offset, 800 + offset, offset), image_origin='upper')
         example_stack_GC_plot_HCR.draw_line([offset, 800 + offset, 800 + offset, offset, offset],
                           [offset, offset, 800 + offset, 800 + offset, offset], lc='w', lw=0.5)
+    # Add six black dots to highlight the stack.
     example_stack_GC_plot_HCR.draw_scatter([100, 150, 200, 900, 950, 1000], [900, 950, 1000, 100, 150, 200], ec='k', pc='k', ps=1)
 
+    # Create the magenta, green, gray colormap for the overlay figures
     cmap_m = ListedColormap(np.c_[np.linspace(0, 1, 256), np.zeros(256), np.linspace(0, 1, 256)])
     cmap_g = ListedColormap(np.c_[np.zeros(256), np.linspace(0, 1, 256), np.zeros(256)])
     cmap_k = ListedColormap(np.c_[np.linspace(0, 1, 256), np.linspace(0, 1, 256), np.linspace(0, 1, 256)])
 
+    # Loop over the 5 example planes and plot the gad and vglut stacks overlaid using the magenta (gad) and green (vglut) colormaps.
     for z, offset in zip(range(5), [0, 50, 250, 300, 350]):
         im = np.clip(gad_stack[:, :, z].T, gad_low, gad_high)
         im = (im - np.nanmin(im)) / (np.nanmax(im) - np.nanmin(im))
@@ -302,13 +354,16 @@ def subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example
         im_combined = np.sum(np.stack([im_m, im_g], axis=3), axis=3)
         im_combined[im_combined > 1] = 1
 
+        # Draw the planes with a white outline.
         example_stack_gad_vglut_plot_HCR.draw_image(im_combined, extent=(offset, 800 + offset, 800 + offset, offset),
                                                     image_origin='upper')
         example_stack_gad_vglut_plot_HCR.draw_line([offset, 800 + offset, 800 + offset, offset, offset],
                           [offset, offset, 800 + offset, 800 + offset, offset], lc='w', lw=0.5)
+
+    # Add six black dots to highlight the stack.
     example_stack_gad_vglut_plot_HCR.draw_scatter([100, 150, 200, 900, 950, 1000], [900, 950, 1000, 100, 150, 200], ec='k', pc='k', ps=1)
 
-
+    # Create the overlay image in Fig 4b with Gcamp in the gray, vglut in the green, and gad in the magenta channel of the mgk colormap.
     im = np.clip(GC_stack[:, :, example_plane].T, GC_low, GC_high)
     im = (im - np.nanmin(im)) / (np.nanmax(im) - np.nanmin(im))
     im_k = cmap_k(im)
@@ -321,13 +376,16 @@ def subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example
     im = (im - np.nanmin(im)) / (np.nanmax(im) - np.nanmin(im))
     im_g = cmap_g(im)
 
+    # Combine the three planes.
     im_combined = np.sum(np.stack([im_k, im_m, im_g], axis=3), axis=3)
     im_combined[im_combined > 1] = 1
 
+    # Draw the overlay image with a scalebar.
     example_loc_plot_overlap.draw_image(im_combined, extent=(0, 800, 800, 0), image_origin='upper')
     example_loc_plot_overlap.draw_line([780-168, 780], [780, 780], lc='w')
     example_loc_plot_overlap.draw_text(780-84, 730, '50\u00b5m', textcolor='w')
 
+    # Loop over the single small images G8s, gad, and vglut and draw the planes in gray.
     for avg_im, subfig, name, color, alpha, clip_low, clip_high in zip([GC_stack[:, :, example_plane], gad_stack[:, :, example_plane], Glut_stack[:, :, example_plane]],
                                                   [example_loc_plot_GC, example_loc_plot_gad, example_loc_plot_Glut],
                                                   ['G8s', 'gad', 'vglut'],
@@ -342,13 +400,34 @@ def subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example
 
 
 def sub_plot_example_neuron(example_data_path, file_base_name, subfiga, subfigb, subfigc, subfigds, cell_name, cell_x_v, cell_y_v, z_plane_v, cell_x, cell_y, z_plane, tile):
+    '''
+    This function plots the close-up GCaMP live, GCAMP fixed and vglut/gad images. As well as the activity traces of an example neuron.
+    This is related to Fig. 4c
+    :param example_data_path: Path to the example data folder.
+    :param file_base_name: File name of the functional data hdf5 file.
+    :param subfiga: Subfigure to plot the GCaMP live image
+    :param subfigb: Subfigure to plot the GCaMP fixed image
+    :param subfigc: Subfigure to plot the vglut/gad overlay in situ image.
+    :param subfigds: List of subfigures to plot the activity traces of the example neuron.
+    :param cell_name: Name of the example neuron.
+    :param cell_x_v: X-position in the volume stack of the example neuron.
+    :param cell_y_v: Y-position in the volume stack  of the example neuron.
+    :param z_plane_v: Z_plane of the example neuron in the volume stack.
+    :param cell_x: X-position in the functional stack of the example neuron.
+    :param cell_y: Y-position in the functional stack of the example neuron.
+    :param z_plane: Z_plane of the example neuron in the functional stack.
+    :param tile: Tile of the example neuron in the volume stack.
+    '''
+    # Load the data
     gad, _ = nrrd.read(fr'{example_data_path}\gadregistered2volume.nrrd', index_order='C')
     vglut, _ = nrrd.read(fr'{example_data_path}\vglutregistered2volume.nrrd', index_order='C')
-    ref2, _ = nrrd.read(fr'{example_data_path}\vglutGcampregistered2volume.nrrd', index_order='C')
+    try:
+        ref2, _ = nrrd.read(fr'{example_data_path}\vglutGcampregistered2volume.nrrd', index_order='C')
+    except:
+        ref2, _ = nrrd.read(fr'{example_data_path}\gadGcampregistered2volume.nrrd', index_order='C')
     _, volume_header = nrrd.read(fr'{example_data_path}\volume.nrrd',index_order='C')
     ref1, ref1_header = nrrd.read(fr'{example_data_path}\ref1.nrrd',index_order='C')
 
-    #np.array(header["spacings"])
     scalev = np.linalg.norm(volume_header["space directions"], axis=0)[0]  # Pixel size in volume
     scalev1 = np.linalg.norm(ref1_header["space directions"], axis=0)[0]  # Pixel size in ref1
 
@@ -442,14 +521,25 @@ def sub_plot_example_neuron(example_data_path, file_base_name, subfiga, subfigb,
     return
 
 def get_avg_traces_per_neuron(file_paths, cell_names, z_planes, flip_stims):
+    '''
+    This function gets the average traces for each neuron.
+    :param file_paths: List of Paths to the datafolders.
+    :param cell_names: List of Names of the cells to get the traces from.
+    :param z_planes: List of Z_planes of the cells to get the traces from.
+    :param flip_stims: If True flip the stimulus Right to Left. This is used to be able to merge left and right dataframes.
+    :return: Array with the average activity trace per neuron.
+    '''
+    # Loop over all cells in the lists.
     first_cell = True
     traces = [[]] * 9
     for file_path, cell_name, z_plane, flip_stim in zip(file_paths, cell_names, z_planes, flip_stims):
+        # Load the data from the current cell.
         with h5py.File(
                 fr'{file_path}',
                 'r',
         ) as f:
 
+            # Based on flip_stims, check which stimulus order to use.
             if flip_stim:
                 stim_names = ['lumi_right_dots_right', 'lumi_right_dots_left', 'lumi_right_dots_off', 'lumi_left_dots_right',
                               'lumi_left_dots_left', 'lumi_left_dots_off', 'lumi_off_dots_right', 'lumi_off_dots_left',
@@ -458,10 +548,14 @@ def get_avg_traces_per_neuron(file_paths, cell_names, z_planes, flip_stims):
                 stim_names = ['lumi_left_dots_left', 'lumi_left_dots_right', 'lumi_left_dots_off', 'lumi_right_dots_left',
                              'lumi_right_dots_right', 'lumi_right_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right',
                              'lumi_off_dots_off']
+            # Loop over the stimuli
             for t, stim_name in enumerate(stim_names):
+                # Load the fluorescent activity.
                 trace = np.array(f[f'repeat00_tile000_z{z_plane:03d}_950nm/preprocessed_data/fish00/cellpose_segmentation/stimulus_aligned_dynamics'][stim_name]['F'])[:, int(cell_name) - 10000, :]
+                # Calculate dF/F0
                 f0 = np.nanmean(trace, axis=1)
                 dff0 = (trace - f0[:, None]) / f0[:, None]
+                # Add the average dF/F0 activity trace to the traces array.
                 if first_cell:
                     traces[t] = np.nanmean(dff0, axis=0)
                 else:
@@ -473,8 +567,25 @@ def get_avg_traces_per_neuron(file_paths, cell_names, z_planes, flip_stims):
 
 def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_loc_gad, subfig_loc_glut,
                         subfigs_traces_gad, subfigs_traces_Glut, subfigs_locs_gad, subfigs_locs_Glut):
-    all_cells = pd.DataFrame()
+    '''
+    This function finds the ratios of vglut/(vglut+gad) per functional cell type. It also plots the location and activity traces of each functional
+    cell type split by the vglut and gad neurons.
+    This is related to Fig. 4d and S5a.
+    :param data_paths: List of paths to the fish-folders (each folder containing the data of a single fish).
+    :param file_names: List of the functional data file names found in data_paths.
+    :param csv_path: Path to the csv file which contains the data of all cells.
+    :param subfig_ratio: Subfigure to show the ratio of vglut/(vglut+gad)
+    :param subfig_loc_gad: Subfigure to show the location of all gad+ neurons colored by functional type.
+    :param subfig_loc_glut: Subfigure to show the location of all vglut+ neurons colored by functional type.
+    :param subfigs_traces_gad: List of subfigures to show the activity traces of gad+ neurons for each functional type.
+    :param subfigs_traces_Glut: List of subfigures to show the activity traces of vglut+ neurons for each functional type.
+    :param subfigs_locs_gad: List of subfigures to show the location of gad+ neurons for each functional type.
+    :param subfigs_locs_Glut: List of subfigures to show the location of vglut+ neurons for each functional type.
+    '''
 
+    # Initialize the Dataframe which will contain all cells.
+    all_cells = pd.DataFrame()
+    # Loop over all fish to get the manual classification of gad or vglut.
     for output_path, file in zip(data_paths, file_names):
         # File to save manual entries
         output_file_path = fr'{output_path}\manual_entries.csv'
@@ -496,6 +607,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
 
         all_cells = pd.concat([all_cells, merged_by_cell])
 
+    # Split the data by functional type: m = motion integrator, dr = multifeature integrator, l = luminance integrator, b = luminance increase detector, dk = luminance decrease detector, df = luminance change detector.
     m_df = all_cells[(all_cells['mr'] == 1) | (all_cells['ml'] == 1)]
     dr_df = all_cells[(all_cells['drl'] == 1) | (all_cells['drr'] == 1)]
     l_df = all_cells[(all_cells['ll'] == 1) | (all_cells['lr'] == 1)]
@@ -513,9 +625,8 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
         "dark": dk_df,
     }
 
-    # Store results
+    # Store results by looping over each functional type and reading out the amount of vglut and gad (gaba) cells.
     ratio_data = []
-
     for func_type, df in type_dfs.items():
         # Only keep gad or vglut-labeled cells
         filtered = df[df["description"].isin(["gaba", "vglut"])]
@@ -539,6 +650,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     # Convert to DataFrame
     ratio_df = pd.DataFrame(ratio_data)
 
+    # Add a gray line to the ratios plot to indicate 0.5 ratio.
     subfig_ratio.draw_line([-1, 6], [0.5, 0.5], lc='gray')
 
     # Jitter x-values slightly for better visibility
@@ -557,22 +669,29 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
         print(func_type)
         print(ttest_ind(subset['ratio'], 0.5))
 
+    # Split the data based on gad (gaba) or vglut.
     data = pd.read_csv(csv_path)
     data['file_path'] = [data['file_path'][i].replace('Y:', 'W:') for i in data.index]
     gad_data = data[data['description'] == 'gaba']
     glut_data = data[data['description'] == 'vglut']
 
+    # Loop over all functional types and draw the location of the neurons split by vglut and gad (Fig 4d)
     for type, color, direction in zip(
             ['br', 'dkr', 'lr', 'mr', 'drr', 'dfr', 'bl', 'dkl', 'll', 'ml', 'drl', 'dfl', ],
             ['#F748A5', '#9F0162', '#E69F00', '#359B73', '#2271B2', '#D55E00', '#F748A5', '#9F0162',  '#E69F00', '#359B73', '#2271B2', '#D55E00'],
             ['r', 'r', 'r', 'r', 'r', 'r', 'l', 'l', 'l', 'l', 'l', 'l', ]):
+        # Select only the gad+ cells from the current type.
         gad_type_data = gad_data[gad_data[type] == 1]
+        # select only the vglut+ cells from the current type.
         glut_type_data = glut_data[glut_data[type] == 1]
+
+        # Plot the left neurons as solid circles both in the xy and yz plots.
         if direction == 'l':
             subfig_loc_gad.draw_scatter(gad_type_data['x_zbrain'].astype(float), gad_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             subfig_loc_gad.draw_scatter(gad_type_data['z_zbrain'].astype(float) + 515, gad_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             subfig_loc_glut.draw_scatter(glut_type_data['x_zbrain'].astype(float), glut_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             subfig_loc_glut.draw_scatter(glut_type_data['z_zbrain'].astype(float) + 515, glut_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
+        # Plot the right neurons as open circles both in the xy and the yz plots
         else:
             subfig_loc_gad.draw_scatter(gad_type_data['x_zbrain'].astype(float), gad_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
             subfig_loc_gad.draw_scatter(gad_type_data['z_zbrain'].astype(float) + 515, gad_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
@@ -580,37 +699,46 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
             subfig_loc_glut.draw_scatter(glut_type_data['z_zbrain'].astype(float) + 515, glut_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
 
     subfig_loc_gad.draw_text(500, 820, 'gad')
+    # Draw red boxes as outlines to later fit the ZBRAIN cartoon outline.
     subfig_loc_gad.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
     subfig_loc_gad.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
     subfig_loc_glut.draw_text(500, 820, 'vglut')
+    # Draw red boxes as outlines to later fit the ZBRAIN cartoon outline.
     subfig_loc_glut.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
     subfig_loc_glut.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
 
+    # Loop over all functional types, split by gad and vglut and draw the location in the supplemental location plots (Fig S5a)
     for type, color, direction, supfig_gad, supfig_glut in zip(
             ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', 'ml', 'll', 'dkl', 'bl', 'drl', 'dfl',],
             ['#359B73', '#E69F00', '#9F0162',  '#F748A5', '#2271B2', '#D55E00', '#359B73', '#E69F00', '#9F0162',  '#F748A5', '#2271B2', '#D55E00', ],
             ['r', 'r', 'r', 'r', 'r', 'r', 'l', 'l', 'l', 'l', 'l', 'l', ],
             np.concatenate([subfigs_locs_gad, subfigs_locs_gad]),
             np.concatenate([subfigs_locs_Glut, subfigs_locs_Glut])):
+        # Select only the gad+ cells from the current type.
         gad_type_data = gad_data[gad_data[type] == 1]
+        # select only the vglut+ cells from the current type.
         glut_type_data = glut_data[glut_data[type] == 1]
+
+        # Plot the left neurons as solid circles both in the xy and yz plots.
         if direction == 'l':
             supfig_gad.draw_scatter(gad_type_data['x_zbrain'].astype(float), gad_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             supfig_gad.draw_scatter(gad_type_data['z_zbrain'].astype(float) + 515, gad_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             supfig_glut.draw_scatter(glut_type_data['x_zbrain'].astype(float), glut_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
             supfig_glut.draw_scatter(glut_type_data['z_zbrain'].astype(float) + 515, glut_type_data['y_zbrain'].astype(float), pc=color, ec=color, elw=0.25, ps=0.75, alpha=0.75)
+        # Plot the right neurons as open circles both in the xy and the yz plots
         else:
             supfig_gad.draw_scatter(gad_type_data['x_zbrain'].astype(float), gad_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
             supfig_gad.draw_scatter(gad_type_data['z_zbrain'].astype(float) + 515, gad_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
             supfig_glut.draw_scatter(glut_type_data['x_zbrain'].astype(float), glut_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
             supfig_glut.draw_scatter(glut_type_data['z_zbrain'].astype(float) + 515, glut_type_data['y_zbrain'].astype(float), pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
 
+        # Draw red boxes as outlines to later fit the ZBRAIN cartoon outline.
         supfig_gad.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
         supfig_gad.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
         supfig_glut.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
         supfig_glut.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
 
-
+    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S5a
     for type_l, type_r, subfigs, color, fillcolor in zip(['ml', 'll', 'dkl', 'bl', 'drl', 'dfl', ],
                                                          ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', ],
                                                          subfigs_traces_gad,
@@ -618,17 +746,21 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
                                                          ['#8DCDB4', '#F7D280', '#CC7CAD', '#F7A4D0', '#93BADA', '#EEAE7C']
                                                         ):
         print(f'gad: {type_l} - {type_r}')
+        # Select only the gad+ cells from the current type.
         type_data = gad_data[gad_data[type_l] == 1]
+        # Set flip_stims to True for rightward stimuli, to later load the activity traces from the flipped stimulus.
         flip_stims = np.zeros(len(type_data))
         type_data = pd.concat([type_data, gad_data[gad_data[type_r] == 1]])
         flip_stims = np.concatenate([flip_stims, np.ones(len(gad_data[gad_data[type_r] == 1]))])
 
+        # Load the activity traces
         traces = get_avg_traces_per_neuron(type_data['file_path'], type_data['cell_name_x'], type_data['z_plane'], flip_stims)
 
+        # Loop over the stimuli and plot the activity traces
         for subfig, trace, stim in zip(subfigs, traces, ['lumi_left_dots_left',  'lumi_left_dots_right',  'lumi_left_dots_off',
                                                           'lumi_right_dots_left', 'lumi_right_dots_right', 'lumi_right_dots_off',
                                                           'lumi_off_dots_left',   'lumi_off_dots_right',   'lumi_off_dots_off']):
-
+            # Plot the median and quartile range of the dF/F0.
             subfig.draw_line(np.arange(0, 60, 0.5), np.nanpercentile(trace, 50, axis=0),
                              yerr_neg=np.nanpercentile(trace, 50, axis=0) - np.nanpercentile(trace, 25, axis=0),
                              yerr_pos=np.nanpercentile(trace, 75, axis=0) - np.nanpercentile(trace, 50),
@@ -640,6 +772,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     subfigs_traces_gad[4][8].draw_line([40, 60], [-0.34, -0.34], lc='k')
     subfigs_traces_gad[4][8].draw_text(50, -0.6, '20s')
 
+    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S5a
     for type_l, type_r, subfigs, color, fillcolor in zip(['ml', 'll', 'dkl', 'bl', 'drl', 'dfl', ],
                                                          ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', ],
                                                          subfigs_traces_Glut,
@@ -647,18 +780,24 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
                                                          ['#8DCDB4', '#F7D280', '#CC7CAD', '#F7A4D0', '#93BADA', '#EEAE7C']
                                                          ):
         print(f'vglut: {type_l} - {type_r}')
+        # Select only the vglut+ cells from the current type.
         type_data = glut_data[glut_data[type_l] == 1]
+        # Set flip_stims to True for rightward stimuli, to later load the activity traces from the flipped stimulus.
         flip_stims = np.zeros(len(type_data))
         type_data = pd.concat([type_data, glut_data[glut_data[type_r] == 1]])
         flip_stims = np.concatenate([flip_stims, np.ones(len(glut_data[glut_data[type_r] == 1]))])
 
+        # Load the activity traces
         traces = get_avg_traces_per_neuron(type_data['file_path'], type_data['cell_name_x'], type_data['z_plane'],
                                            flip_stims)
 
+        # Loop over the stimuli and plot the activity traces
         for subfig, trace, stim in zip(subfigs, traces,
                                        ['lumi_left_dots_left', 'lumi_left_dots_right', 'lumi_left_dots_off',
                                         'lumi_right_dots_left', 'lumi_right_dots_right', 'lumi_right_dots_off',
                                         'lumi_off_dots_left', 'lumi_off_dots_right', 'lumi_off_dots_off']):
+
+            # Plot the median and quartile range of the dF/F0.
             subfig.draw_line(np.arange(0, 60, 0.5), np.nanpercentile(trace, 50, axis=0),
                              yerr_neg=np.nanpercentile(trace, 50, axis=0) - np.nanpercentile(trace, 25, axis=0),
                              yerr_pos=np.nanpercentile(trace, 75, axis=0) - np.nanpercentile(trace, 50),
@@ -672,43 +811,64 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     return
 
 if __name__ == '__main__':
-    hcr_fig = Figure(fig_width=9, fig_height=7)
-    hcr_supfig = Figure(fig_width=18, fig_height=12)
+    # Provide the path to save the figures.
+    fig_save_path = 'C:/users/katja/Desktop/fig_4.pdf'
+    supfig_save_path = 'C:/users/katja/Desktop/fig_S5.pdf'
 
-    example_GC_path_HCR = r'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250408L\volume.nrrd'
-    example_gad_path_HCR = r'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250408L\gadregistered2volume.nrrd'
-    example_Glut_path_HCR = r'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250408L\vglutregistered2volume.nrrd'
-    example_plane = 16
-    example_neuron_data_path = fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250408L'
+    # Provide the path to the figure_4 folder.
+    fig_4_folder_path = r'Z:\Bahl lab member directories\Katja\paper_data\figure_4'
+
+    # Get the example data folder and functional data file name
+    example_neuron_data_path = fr'{fig_4_folder_path}\20250408'
     example_neuron_file_base_name = '2025-04-08_10-20-26_fish000_setup0_arena0_functional'
-    HCR_csv_overview_path = fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\all_cells_with_zbrain.csv'
-    HCR_data_paths = [fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250331',
-                      fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20241112-1',
-                      fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250120left\left',
-                      fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250217_1right',
-                      fr'W:\M11 2P mircroscopes\Sophie\ExpWithKatja\20250408L']
 
+    # Get the paths to the corresponding example stacks volume.nrrd, gadregistered2volume.nrrd, and vglutregistered2volume.nrrd
+    example_GC_path_HCR = rf'{example_neuron_data_path}\volume.nrrd'
+    example_gad_path_HCR = rf'{example_neuron_data_path}\gadregistered2volume.nrrd'
+    example_Glut_path_HCR = rf'{example_neuron_data_path}\vglutregistered2volume.nrrd'
+
+    # Choose the example plane to show.
+    example_plane = 16
+
+    # Choose the example neuron to show. Find the relevant parameters in the all_cells_with_zbrain.csv file.
+    cell_name, cell_x_v, cell_y_v, z_plane_v, cell_x, cell_y, z_plane, tile = [10438,	124.235,	70.0626,	28,	414.34177,	239.20886,	0,	0]
+
+    # Get the path to the csv file containing all cells as well as the fish folders and functional data file names.
+    HCR_csv_overview_path = fr'{fig_4_folder_path}\all_cells_with_zbrain.csv'
+    HCR_data_paths = [fr'{fig_4_folder_path}\20250331',
+                      fr'{fig_4_folder_path}\20241112',
+                      fr'{fig_4_folder_path}\20250120left',
+                      fr'{fig_4_folder_path}\20250217',
+                      fr'{fig_4_folder_path}\20250408']
     HCR_file_names = ['2025-03-31_11-46-00_fish000_setup0_arena0_functional',
                       '2024-11-12_11-40-51_fish000_SA',
                       '2025-01-20_10-47-06_fish000_setup0_arena0_SA',
                       '2025-02-17_18-40-48_fish001_setup1_arena0_functional',
                       '2025-04-08_10-20-26_fish000_setup0_arena0_functional']
 
+    # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 4 and S5.
+    hcr_fig = Figure(fig_width=9, fig_height=7)
+    hcr_supfig = Figure(fig_width=18, fig_height=12)
+
+    # Fig. 4a
     example_stack_GC_plot_HCR = hcr_fig.create_plot(xpos=0.25, ypos=3.8, plot_height=1.4, plot_width=1.4, axis_off=True,
                                                 xmin=0, xmax=1150, ymin=1150, ymax=0)
     example_stack_gad_vglut_plot_HCR = hcr_fig.create_plot(xpos=3.5, ypos=3.8, plot_height=1.4, plot_width=1.4, axis_off=True,
                                                  xmin=0, xmax=1150, ymin=1150, ymax=0)
 
+    # Fig. 4b
     example_loc_plot_overlap = hcr_fig.create_plot(xpos=5.5, ypos=3.8, plot_height=2.6, plot_width=2.6, axis_off=True)
     example_loc_plot_GC = hcr_fig.create_plot(xpos=8.15, ypos=3.8, plot_height=0.75, plot_width=0.75, axis_off=True)
     example_loc_plot_gad = hcr_fig.create_plot(xpos=8.15, ypos=4.725, plot_height=0.75, plot_width=0.75, axis_off=True)
     example_loc_plot_Glut = hcr_fig.create_plot(xpos=8.15, ypos=5.65, plot_height=0.75, plot_width=0.75, axis_off=True)
 
+    # Fig. Fig 4c
     example_neuron_plot_insitu = hcr_fig.create_plot(xpos=0.25, ypos=2.6, plot_height=0.75, plot_width=0.75, axis_off=True)
     example_neuron_plot_ref1 = hcr_fig.create_plot(xpos=1.4, ypos=2.6, plot_height=0.75, plot_width=0.75, axis_off=True)
     example_neuron_plot_ref2 = hcr_fig.create_plot(xpos=2.3, ypos=2.6, plot_height=0.75, plot_width=0.75, axis_off=True)
     example_neuron_traces_plots = create_traces_simple_subplots(hcr_fig, x_l=0.8, y_t=1.7, x_ss=0.75, y_ss=0.45, ymax_extra=-0.3)
 
+    # Fig. 4d
     HCR_plot_ratios = hcr_fig.create_plot(xpos=4.5, ypos=1.3, xmin=-1, xmax=6, ymin=-0.05, ymax=1.05,
                                plot_height=2.1, plot_width=2.7, xticks=[0, 1, 2, 3, 4, 5], xticklabels=['motion', 'multifeature', 'luminance', 'change', 'increase', 'decrease'],
                                xticklabels_rotation=45, yticks=[0.0, 0.25, 0.5, 0.75, 1.0], yl='vglut\n(gad+vglut)')
@@ -719,25 +879,28 @@ if __name__ == '__main__':
                                           xmin=30, xmax=800, ymin=850, ymax=80,
                                        legend_xpos=16.2-2.75, legend_ypos=14+2.75)
 
+    # Fig. S4a
     HCR_subfigs_locs_gad = create_locs_subplots(hcr_supfig, x_l=1, y_t=5.85, x_bs=5.9, y_bs=5,)
     HCR_subfigs_locs_Glut = create_locs_subplots(hcr_supfig, x_l=3.9, y_t=5.85, x_bs=5.9, y_bs=5)
 
     HCR_subfigs_traces_gad = create_traces_subplots(hcr_supfig, x_l=0.75, y_t=10., x_bs=5.9, y_bs=5, x_ss=0.85)
     HCR_subfigs_traces_Glut = create_traces_subplots(hcr_supfig, x_l=3.65, y_t=10., x_bs=5.9, y_bs=5, x_ss=0.85)
 
+    # Plot the example overview data (Fig. 4a-b)
     subfig_HCR_example_stacks(example_GC_path_HCR, example_gad_path_HCR, example_Glut_path_HCR,
                               example_stack_GC_plot_HCR, example_stack_gad_vglut_plot_HCR,
                               example_loc_plot_overlap, example_loc_plot_GC, example_loc_plot_gad, example_loc_plot_Glut,
                               example_plane)
-    cell_name, cell_x_v, cell_y_v, z_plane_v, cell_x, cell_y, z_plane, tile = [10438,	124.235,	70.0626,	28,	414.34177,	239.20886,	0,	0]
 
+    # Plot the example neuron location and traces (Fig. 4c)
     sub_plot_example_neuron(example_neuron_data_path, example_neuron_file_base_name,
                             example_neuron_plot_insitu, example_neuron_plot_ref1, example_neuron_plot_ref2, example_neuron_traces_plots,
                             cell_name=int(cell_name), cell_x_v=cell_x_v, cell_y_v=cell_y_v, z_plane_v=z_plane_v, cell_x=cell_x, cell_y=cell_y,
                             z_plane=z_plane, tile=tile)
 
+    # Plot the vglut/(vglut+gad) ratios per functional type and plot the activity and locations split by vglut/gad (Fig. 4d, S5a).
     sub_plot_HCR_ratios(HCR_data_paths, HCR_file_names, HCR_csv_overview_path, HCR_plot_ratios, HCR_loc_gad, HCR_loc_Glut,
                        HCR_subfigs_traces_gad, HCR_subfigs_traces_Glut, HCR_subfigs_locs_gad, HCR_subfigs_locs_Glut)
 
-    hcr_fig.save('C:/users/katja/Desktop/fig4.pdf')
-    hcr_supfig.save('C:/users/katja/Desktop/sup_figS5.pdf')
+    hcr_fig.save(fig_save_path)
+    hcr_supfig.save(supfig_save_path)
