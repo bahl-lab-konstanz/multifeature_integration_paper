@@ -546,9 +546,14 @@ def get_data(folder_name, stim_len_timepoints, stim_name, path_to_folders, nspli
     :return: The data: mean training values, SEM training values, mean testing values, SEM testing values.
     '''
     # Load the analysed dataframe.
-    path_to_local_folder = rf'{path_to_folders}\{folder_name}\Analysis'
-    df_path = f'{path_to_local_folder}/data_analysed.hdf5'
-    df = pd.read_hdf(df_path)
+    try:
+        path_to_local_folder = rf'{path_to_folders}\{folder_name}'
+        df_path = f'{path_to_local_folder}/data_analysed.hdf5'
+        df = pd.read_hdf(df_path)
+    except:
+        path_to_local_folder = rf'{path_to_folders}\{folder_name}\Analysis'
+        df_path = f'{path_to_local_folder}/data_analysed.hdf5'
+        df = pd.read_hdf(df_path)
 
     # Group the data into the splits.
     gkf = GroupShuffleSplit(n_splits=nsplits)
@@ -1209,6 +1214,7 @@ def sub_plot_example_traces_model_fit(path_to_analysed_data, subfiga, subfigb, s
                     folder_names=folder_names_test,
                     stim_len_timepoints=stim_len_timepoints_test,
                     stim_names=stim_names_test,
+                    path_to_folders=path_to_folders,
                     subfig_data=None,
                     subfig_model=subfigb,
                     training_folder_ids=testing_folder_ids,
