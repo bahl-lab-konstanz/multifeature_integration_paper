@@ -451,19 +451,44 @@ def sub_plot_example_neuron(example_data_path, file_base_name, subfiga, subfigb,
     tile = str(tile).zfill(3)
 
     # Load contour from HDF5
-    with h5py.File(
-            fr'{example_data_path}\{file_base_name}\{file_base_name}_preprocessed_data.h5',
-            'r',
-    ) as f:
-        print(f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}')
-        contour = f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}'][:]
-        contourv = np.floor(f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours_ants_volume_registered/{cell_name}'][:] / scalev).astype(int)
-        traces = [[]] * 9
-        for t, stim_name in enumerate(['lumi_left_dots_left', 'lumi_left_dots_right', 'lumi_left_dots_off', 'lumi_right_dots_left', 'lumi_right_dots_right', 'lumi_right_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right', 'lumi_off_dots_off']):
-            trace = np.array(f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/stimulus_aligned_dynamics'][stim_name]['F'])[:, int(cell_name) - 10000, :]
-            f0 = np.nanmean(trace, axis=1)
-            dff0 = (trace - f0[:, None]) / f0[:, None]
-            traces[t] = dff0
+    try:
+        with h5py.File(
+                fr'{example_data_path}\{file_base_name}_preprocessed_data.h5',
+                'r',
+        ) as f:
+            print(
+                f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}')
+            contour = f[
+                          f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}'][
+                      :]
+            contourv = np.floor(f[
+                                    f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours_ants_volume_registered/{cell_name}'][
+                                :] / scalev).astype(int)
+            traces = [[]] * 9
+            for t, stim_name in enumerate(
+                    ['lumi_left_dots_left', 'lumi_left_dots_right', 'lumi_left_dots_off', 'lumi_right_dots_left',
+                     'lumi_right_dots_right', 'lumi_right_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right',
+                     'lumi_off_dots_off']):
+                trace = np.array(f[
+                                     f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/stimulus_aligned_dynamics'][
+                                     stim_name]['F'])[:, int(cell_name) - 10000, :]
+                f0 = np.nanmean(trace, axis=1)
+                dff0 = (trace - f0[:, None]) / f0[:, None]
+                traces[t] = dff0
+    except:
+        with h5py.File(
+                fr'{example_data_path}\{file_base_name}\{file_base_name}_preprocessed_data.h5',
+                'r',
+        ) as f:
+            print(f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}')
+            contour = f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours/{cell_name}'][:]
+            contourv = np.floor(f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/unit_contours_ants_volume_registered/{cell_name}'][:] / scalev).astype(int)
+            traces = [[]] * 9
+            for t, stim_name in enumerate(['lumi_left_dots_left', 'lumi_left_dots_right', 'lumi_left_dots_off', 'lumi_right_dots_left', 'lumi_right_dots_right', 'lumi_right_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right', 'lumi_off_dots_off']):
+                trace = np.array(f[f'repeat00_tile{tile}_z{z}_950nm/preprocessed_data/fish00/cellpose_segmentation/stimulus_aligned_dynamics'][stim_name]['F'])[:, int(cell_name) - 10000, :]
+                f0 = np.nanmean(trace, axis=1)
+                dff0 = (trace - f0[:, None]) / f0[:, None]
+                traces[t] = dff0
 
     # Adjust contour for cropping
     adjusted_contour = contour - np.array([x_min, y_min])
@@ -837,7 +862,7 @@ if __name__ == '__main__':
     HCR_csv_overview_path = fr'{fig_4_folder_path}\all_cells_with_zbrain.csv'
     HCR_data_paths = [fr'{fig_4_folder_path}\20250331',
                       fr'{fig_4_folder_path}\20241112',
-                      fr'{fig_4_folder_path}\20250120left',
+                      fr'{fig_4_folder_path}\20250120',
                       fr'{fig_4_folder_path}\20250217',
                       fr'{fig_4_folder_path}\20250408']
     HCR_file_names = ['2025-03-31_11-46-00_fish000_setup0_arena0_functional',
