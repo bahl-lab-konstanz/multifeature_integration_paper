@@ -36,7 +36,7 @@ thereby getting rid of the (_part1, _part2 etc) hierarchy. The subpackaging was 
 
 ---
 Each figureX_xx.py file contains the code to reproduce figure X and related supplementary figures 
-(as exception figureS1 and figure S5, which have their own python file).
+(as exception figureS1, figure S5 and figure S6, which have their own python file).
 
 To reproduce the figure, Search for '# Provide' (at the start of the main code) and fill in the path to the downloaded (and merged per figure) 
 data-folder, as well as the path where to save the figure(s). Then run the code. 

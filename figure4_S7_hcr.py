@@ -595,7 +595,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     '''
     This function finds the ratios of vglut/(vglut+gad) per functional cell type. It also plots the location and activity traces of each functional
     cell type split by the vglut and gad neurons.
-    This is related to Fig. 4d and S6a.
+    This is related to Fig. 4d and S7a.
     :param data_paths: List of paths to the fish-folders (each folder containing the data of a single fish).
     :param file_names: List of the functional data file names found in data_paths.
     :param csv_path: Path to the csv file which contains the data of all cells.
@@ -732,7 +732,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     subfig_loc_glut.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
     subfig_loc_glut.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
 
-    # Loop over all functional types, split by gad and vglut and draw the location in the supplemental location plots (Fig S6a)
+    # Loop over all functional types, split by gad and vglut and draw the location in the supplemental location plots (Fig S7a)
     for type, color, direction, supfig_gad, supfig_glut in zip(
             ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', 'ml', 'll', 'dkl', 'bl', 'drl', 'dfl',],
             ['#359B73', '#E69F00', '#9F0162',  '#F748A5', '#2271B2', '#D55E00', '#359B73', '#E69F00', '#9F0162',  '#F748A5', '#2271B2', '#D55E00', ],
@@ -763,7 +763,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
         supfig_glut.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
         supfig_glut.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
 
-    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S6a
+    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S7a
     for type_l, type_r, subfigs, color, fillcolor in zip(['ml', 'll', 'dkl', 'bl', 'drl', 'dfl', ],
                                                          ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', ],
                                                          subfigs_traces_gad,
@@ -797,7 +797,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
     subfigs_traces_gad[4][8].draw_line([40, 60], [-0.34, -0.34], lc='k')
     subfigs_traces_gad[4][8].draw_text(50, -0.6, '20s')
 
-    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S6a
+    # Loop over all functional types, select the gad+ cells, merge the left and right dataframe and plot the functional activity in Fig. S7a
     for type_l, type_r, subfigs, color, fillcolor in zip(['ml', 'll', 'dkl', 'bl', 'drl', 'dfl', ],
                                                          ['mr', 'lr', 'dkr', 'br', 'drr', 'dfr', ],
                                                          subfigs_traces_Glut,
@@ -838,7 +838,7 @@ def sub_plot_HCR_ratios(data_paths, file_names, csv_path, subfig_ratio, subfig_l
 if __name__ == '__main__':
     # Provide the path to save the figures.
     fig_save_path = 'C:/users/katja/Desktop/fig_4.pdf'
-    supfig_save_path = 'C:/users/katja/Desktop/fig_S6.pdf'
+    supfig_save_path = 'C:/users/katja/Desktop/fig_S7.pdf'
 
     # Provide the path to the figure_4 folder.
     fig_4_folder_path = r'Z:\Bahl lab member directories\Katja\paper_data\figure_4'
@@ -871,7 +871,7 @@ if __name__ == '__main__':
                       '2025-02-17_18-40-48_fish001_setup1_arena0_functional',
                       '2025-04-08_10-20-26_fish000_setup0_arena0_functional']
 
-    # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 4 and S6.
+    # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 4 and S7.
     hcr_fig = Figure(fig_width=9, fig_height=7)
     hcr_supfig = Figure(fig_width=18, fig_height=12)
 
@@ -923,7 +923,7 @@ if __name__ == '__main__':
                             cell_name=int(cell_name), cell_x_v=cell_x_v, cell_y_v=cell_y_v, z_plane_v=z_plane_v, cell_x=cell_x, cell_y=cell_y,
                             z_plane=z_plane, tile=tile)
 
-    # Plot the vglut/(vglut+gad) ratios per functional type and plot the activity and locations split by vglut/gad (Fig. 4d, S6a).
+    # Plot the vglut/(vglut+gad) ratios per functional type and plot the activity and locations split by vglut/gad (Fig. 4d, S7a).
     sub_plot_HCR_ratios(HCR_data_paths, HCR_file_names, HCR_csv_overview_path, HCR_plot_ratios, HCR_loc_gad, HCR_loc_Glut,
                        HCR_subfigs_traces_gad, HCR_subfigs_traces_Glut, HCR_subfigs_locs_gad, HCR_subfigs_locs_Glut)
 
