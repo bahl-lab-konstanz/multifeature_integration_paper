@@ -13,9 +13,6 @@ rcParams['font.sans-serif'] = ['Arial']
 rcParams['font.weight'] = 'normal'
 rcParams['font.size'] = 6
 
-
-
-
 # ===================================================
 # USER CONFIGURATION
 # ===================================================
@@ -122,7 +119,6 @@ height_cm = 2.5 * n_rows
 
 fig, axes = plt.subplots(n_rows, n_cols, figsize = (width_cm/2.54, height_cm/2.54))
 axes = np.array(axes).reshape(n_rows, n_cols)
-# ---- Panel label “A” in top-left of the whole figure ----
 
 k=0
 for ax, (_, entry) in zip(axes.flat, sampled.iterrows()):
@@ -210,9 +206,6 @@ for ax, (_, entry) in zip(axes.flat, sampled.iterrows()):
                 bbox_transform=subax.transAxes
             )
             subax.add_artist(scalebar)
-            # --- Add magenta/green legend ---
-
-            # Coordinates are relative to axis: (x, y) in [0,1]
 
 
         # Dashed contour for first panel only

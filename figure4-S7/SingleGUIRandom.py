@@ -13,12 +13,6 @@ rcParams['font.sans-serif'] = ['Arial']
 rcParams['font.weight'] = 'normal'
 rcParams['font.size'] = 6
 
-
-
-# … your existing code …
-
-
-
 # ===================================================
 # USER CONFIGURATION
 # ===================================================
@@ -186,14 +180,12 @@ def plot_full_gui(entry):
     axes[0].axis("off")
 
 
-    # --- Add scale bar (10 µm) to the first panel ---
+    # --- Add scale bar (5 µm) to the first panel ---
     from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
     import matplotlib.font_manager as fm
 
     scalebar_um = 5  # length in microns
     scalebar_px = scalebar_um / scalev  # convert to pixel units based on volume scale
-
-    # fontprops = fm.FontProperties(size=10)
 
     scalebar = AnchoredSizeBar(
         axes[0].transData,
