@@ -240,15 +240,15 @@ if __name__ == '__main__':
     # Fig. S1a
     acc_over_coherence_plot = fig.create_plot(xpos=1.5, ypos=8, plot_height=3.75, plot_width=6,
                                               errorbar_area=True,
-                                              xl='Coherence (%)', xmin=-110, xmax=110,
-                                              xticks=[-100, -50, -25, 0, 25, 50, 100], yl='Right swims (%)', ymin=0,
+                                              xl='coherence (%)', xmin=-110, xmax=110,
+                                              xticks=[-100, -50, -25, 0, 25, 50, 100], yl='right swims (%)', ymin=0,
                                               ymax=1, yticks=[0, 0.25, 0.50, 0.75, 1],
                                               yticklabels=['0', '25', '50', '75', '100'], hlines=[0.5], vlines=[0],
                                               helper_lines_lc='k', legend_xpos=3.5, helper_lines_dashes=(2, 0), )
 
     # Fig. S1c
     single_fish_plot1 = fig.create_plot(xpos=1.5, ypos=4, plot_height=2.5, plot_width=4,
-                                        errorbar_area=True, xmin=-110, xmax=110, yl='Right swims (%)', ymin=0,
+                                        errorbar_area=True, xmin=-110, xmax=110, yl='right swims (%)', ymin=0,
                                         ymax=1, yticks=[0, 0.25, 0.50, 0.75, 1],
                                         yticklabels=['0', '25', '50', '75', '100'], hlines=[0.5], vlines=[0],
                                         helper_lines_lc='k', legend_xpos=3.5, helper_lines_dashes=(2, 0))
@@ -267,7 +267,7 @@ if __name__ == '__main__':
                                         yticklabels=['0', '25', '50', '75', '100'], hlines=[0.5], vlines=[0],
                                         helper_lines_lc='k', legend_xpos=3.5, helper_lines_dashes=(2, 0))
     single_fish_plot5 = fig.create_plot(xpos=6.5, ypos=1, plot_height=2.5, plot_width=4,
-                                        errorbar_area=True, xl='Coherence (%)', xmin=-110, xmax=110,
+                                        errorbar_area=True, xl='coherence (%)', xmin=-110, xmax=110,
                                         xticks=[-100, -50, -25, 0, 25, 50, 100], ymin=0,
                                         ymax=1, hlines=[0.5], vlines=[0], helper_lines_lc='k', legend_xpos=9.5,
                                         helper_lines_dashes=(2, 0))
@@ -283,7 +283,7 @@ if __name__ == '__main__':
     fish_overview_plot = fig.create_plot(xpos=9, ypos=8, plot_height=3.75, plot_width=6, xmin=-1, xmax=6,
                                          xticks=np.arange(6), yl='parameter value', ymin=-3,
                                          ymax=3, yticks=[-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2],
-                                         xticklabels=['', 'Threshold', '', '', 'Width', ''],
+                                         xticklabels=['', 'threshold', '', '', 'width', ''],
                                          hlines=[0.], helper_lines_lc='k', legend_xpos=13.5, helper_lines_dashes=(2, 0))
 
     # Plot the single fish decision curves and parameters (Fig. S1b-c)

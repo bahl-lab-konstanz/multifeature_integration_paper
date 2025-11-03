@@ -925,8 +925,8 @@ def mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum
                                                                           lateral_pathway_neurons,
                                                                           lateral_cross_neurons, ],
                                                                          xy_plots, yz_plots,
-                                                                         [f'lateral ipsi', 'anterior ipsi',
-                                                                          f'one cross lateral', 'one cross 1', ],
+                                                                         [f'ipsilateral posterior', 'ipsilateral anterior',
+                                                                          f'contralateral aHb crossing', 'contralateral tectal crossing', ],
                                                                          [False, False, True, True]):
         # Select the subset of neurons fitting the current pathway.
         print(f'Analysing {name}...')
@@ -948,7 +948,7 @@ def mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum
         yz_plot.draw_navis_neuron(subset_swc_cells_tectum, [], navis_view=('z', '-y'), lc='k', lw=0.25, rasterized=True)
 
         xy_plot.draw_line([311 * 0.798, 311 * 0.798], [100 * 0.798, 1006 * 0.798], lc='w')
-        xy_plot.draw_text(0, -10, name)
+        xy_plot.draw_text(0, -10, name, textlabel_ha='left')
 
     return
 
@@ -979,20 +979,20 @@ def PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, main_path, 
     # Draw the successrate as a stacked horizontal bar. The values are hard-coded.
     success_rate_plot.draw_horizontal_bars([63 / 102, ], [1, ],
                                            horizontal_bar_left=[0, ],
-                                           lc=['tab:green', ], label='Target neuron successfully labeled')
+                                           lc=['tab:green', ], label='target neuron successfully labeled')
     success_rate_plot.draw_horizontal_bars([12 / 102, ], [1, ],
                                            horizontal_bar_left=[63 / 102, ],
                                            lc=['#606060', ],
-                                           label='Labeled multiple cells')
+                                           label='labeled multiple cells')
     success_rate_plot.draw_horizontal_bars([4 / 102, ], [1, ],
                                            horizontal_bar_left=[(63 + 12) / 102, ],
                                            lc=['#808080', ],
-                                           label='Targeted incorrect cell')
+                                           label='targeted incorrect cell')
     success_rate_plot.draw_horizontal_bars([23 / 102], [1],
                                            horizontal_bar_left=[(63 + 12 + 4) / 102],
                                            lc=['#404040'],
-                                           label='Fluorescence increase too small')
-    success_rate_plot.draw_text(0.5, 2, 'Success rate')
+                                           label='fluorescence increase too small')
+    success_rate_plot.draw_text(0.5, 2, 'success rate')
 
     # Loop over the 8 example neurons and plot the pre- and post- zoom-in on the targeted neuron.
     for fig_idx, (
@@ -1002,8 +1002,8 @@ def PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, main_path, 
                 HD_xs, HD_ys, HD_zs, func_sizes, HD_sizes, z_planes_func)):
         # Add the column titles
         if fig_idx == 0:
-            plot_func.draw_text(func_sizes[0], 2.2 * func_size, 'Pre photoactivation')
-            plot_HD.draw_text(HD_sizes[0], 2.2 * HD_size, 'Post photoactivation')
+            plot_func.draw_text(func_sizes[0], 2.2 * func_size, 'pre photoactivation')
+            plot_HD.draw_text(HD_sizes[0], 2.2 * HD_size, 'post photoactivation')
 
         # Load the pre-PA functional data: the average image, the targeted cell outline, the x/y position of the cell.
         preproc_func_hdf5 = h5py.File(
@@ -1531,17 +1531,17 @@ if __name__ == '__main__':
     plot_funcs = []
     plot_HDs = []
     for fig_idx, (func_size, HD_size) in enumerate(zip(PA_quality_func_sizes, PA_quality_HD_sizes)):
-        plot_func = fig.create_plot(xpos=1, ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
+        plot_func = supfig.create_plot(xpos=1, ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
                                     xmin=0, xmax=2 * func_size, ymin=0., ymax=2 * func_size)
-        plot_HD = fig.create_plot(xpos=3., ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
+        plot_HD = supfig.create_plot(xpos=3., ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
                                   xmin=0, xmax=2 * HD_size, ymin=0., ymax=2 * HD_size)
         plot_funcs = np.append(plot_funcs, plot_func)
         plot_HDs = np.append(plot_HDs, plot_HD)
 
     # Fig. S6b
-    success_rate_plot = fig.create_plot(xpos=1, ypos=0.5, ymin=0, ymax=2, xmin=0, xmax=1, plot_width=3.6, plot_height=1,
+    success_rate_plot = supfig.create_plot(xpos=1, ypos=0.5, ymin=0, ymax=2, xmin=0, xmax=1, plot_width=3.6, plot_height=1,
                                         xticks=[0, 0.25, 0.5, 0.75, 1], xticklabels=['0', '25', '50', '75', '100'],
-                                        xl='Amount (%)', legend_xpos=5., legend_ypos=1.5)
+                                        xl='amount (%)', legend_xpos=5., legend_ypos=1.5)
 
     # Perform the mapzebrain analysis (Fig. 5a-b)
     mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum, mapzebrain_nrrd_paths, nrrd_plot,

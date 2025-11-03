@@ -116,8 +116,8 @@ def sub_fig_bout_distributions(path_to_combined_data, subfiga, subfigb):
     # plot the orientation change across all fish and all stimuli.
     hist_values = np.histogram(combined_df['estimated_orientation_change'], bins=np.arange(-100, 102, 2), density=True)
     subfiga.draw_vertical_bars(hist_values[1][:-1]+1, hist_values[0], lc='tab:blue')
-    subfiga.draw_text(-75, 0.035, 'Left bouts')
-    subfiga.draw_text(75, 0.035, 'Right bouts')
+    subfiga.draw_text(-75, 0.035, 'left bouts')
+    subfiga.draw_text(75, 0.035, 'right bouts')
 
     # plot the interbout interval across all fish and all stimuli.
     hist_values = np.histogram(combined_df['interbout_interval'], bins=np.arange(0, 4, 0.05), density=True)
@@ -617,18 +617,18 @@ if __name__ == '__main__':
     fig = Figure(fig_width=9, fig_height=17)
     # Fig. 1b
     raw_orien_plot = fig.create_plot(xpos=4.75, ypos=15, plot_height=1, plot_width=3.75,
-                                    xl='', yl='Orientation (deg)',
+                                    xl='', yl='orientation (deg)',
                                     yticks=[774, 824], yticklabels=['0', '50'], xmin=15.7, xmax=18.5, ymin=770, ymax=830,
                                      vlines=[16.17, 16.32, 16.845, 16.98, 17.7, 17.84], helper_lines_lc='tab:gray',
                                      helper_lines_dashes=(4, 4))
 
     # Fig. 1c
     orien_distr_plot = fig.create_plot(xpos=1, ypos=13, plot_height=1.25, plot_width=2.5,
-                                       xl='Orientation change (deg/bout)', xmin=-110, xmax=110, xticks=[-100, -50, 0, 50, 100],
+                                       xl='orientation change (deg/bout)', xmin=-110, xmax=110, xticks=[-100, -50, 0, 50, 100],
                                        ymin=0, ymax=0.05, vertical_bar_width=2, vlines=[-2, 2], helper_lines_lc='k',
                                        helper_lines_dashes=(1, 0))
     ibi_distr_plot = fig.create_plot(xpos=1, ypos=11, plot_height=1.25, plot_width=2.5,
-                                    xl='Interbout interval (s)', xmin=0, xmax=3, xticks=[0, 1, 2, 3],
+                                    xl='interbout interval (s)', xmin=0, xmax=3, xticks=[0, 1, 2, 3],
                                     ymin=0, ymax=2.1, vertical_bar_width=0.05, helper_lines_lc='k',
                                      helper_lines_dashes=(1, 0))
 
@@ -646,7 +646,7 @@ if __name__ == '__main__':
     # Fig. 1g
     acc_over_coherence_plot = fig.create_plot(xpos=1.1, ypos=5.25, plot_height=3, plot_width=4.5, errorbar_area=True,
                                               xl='Coherence (%)', xmin=x_input[0] - 10, xmax=x_input[-1] + 10,
-                                              xticks=[-100, -50, 0, 50, 100], yl='Rightward swims (%)', ymin=-0.05,
+                                              xticks=[-100, -50, 0, 50, 100], yl='rightward swims (%)', ymin=-0.05,
                                               ymax=1.05, yticks=[0.25, 0.50, 0.75], yticklabels=['25', '50', '75'],
                                               hlines=[0.5], vlines=[0], helper_lines_lc='k', helper_lines_dashes=(1, 0))
 
@@ -682,12 +682,12 @@ if __name__ == '__main__':
     # Fig. 1j
     orien_overview_plot = fig.create_plot(xpos=1.1, ypos=0.5, plot_height=1.5, plot_width=1.75,
                                         xmin=-0.5, xmax=3.5, xticks=[0, 1, 2, 3],
-                                        xticklabels=['M', 'L', 'M=L', 'M\u2260L'], yl='Following swims (%)',
+                                        xticklabels=['M', 'L', 'M=L', 'M\u2260L'], yl='following swims (%)',
                                         ymin=0.25, ymax=1.11, yticks=[0.4, 0.6, 0.8, 1.0], yticklabels=['40', '60', '80', '100'])
     # Fig. 1k
     ibi_overview_plot = fig.create_plot(xpos=3.75, ypos=0.5, plot_height=1.5, plot_width=1.75,
                                         xmin=-0.5, xmax=3.5, xticks=[0, 1, 2, 3],
-                                        xticklabels=['M', 'L', 'M=L', 'M\u2260L'], yl='Relative IBI (s)',
+                                        xticklabels=['M', 'L', 'M=L', 'M\u2260L'], yl='relative IBI (s)',
                                         ymin=-0.4, ymax=0.56, yticks=[-0.4, -0.2, 0, 0.2, 0.4])
 
     # Finally we plot all the data

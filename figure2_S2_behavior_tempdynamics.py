@@ -1509,7 +1509,7 @@ if __name__ == '__main__':
 
     # Fig. 2a
     plot_motion = fig.create_plot(xpos=1, ypos=13.5, plot_height=2, plot_width=3.5, errorbar_area=True,
-                                  xmin=0, xmax=25, yl='Left swims (%)', ymin=0.25,
+                                  xmin=0, xmax=25, yl='left swims (%)', ymin=0.25,
                                   ymax=0.9, yticks=[0.30, 0.50, 0.70, 0.90], yticklabels=['30', '50', '70', '90'], hlines=[0.5],
                                   helper_lines_lc='w', helper_lines_dashes=(2, 0), helper_lines_lw=1, vspans=[[5, 20, 'lightgray', 1.0], ])
 
@@ -1533,15 +1533,15 @@ if __name__ == '__main__':
 
     # Fig. 2g
     plot_model_ADD_example = fig.create_plot(xpos=1, ypos=9, plot_height=1.4, plot_width=7, errorbar_area=True,
-                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[50, 75], yl='Left swims (%)')
+                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[50, 75], yl='l (%)')
     plot_model_ADD_only_example = fig.create_plot(xpos=1, ypos=8., plot_height=1.4, plot_width=7, errorbar_area=True,
-                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[50, 75], yl='Left swims (%)')
+                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[50, 75], yl='left swims (%)')
     plot_model_data_example = fig.create_plot(xpos=1, ypos=6.5, plot_height=1.4, plot_width=7, errorbar_area=True,
-                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[25, 50, 75], yl='Left swims (%)')
+                                               xmin=0, xmax=3250, ymin=20, ymax=90, yticks=[25, 50, 75], yl='left swims (%)')
 
     # Fig. S2b
     plot_white_example = subfig.create_plot(xpos=1, ypos=2.5, plot_height=1.4, plot_width=6.5, errorbar_area=True,
-                                                 xmin=0, xmax=1150, ymin=20, ymax=90, yticks=[25, 50, 75], yl='Left swims (%)',
+                                                 xmin=0, xmax=1150, ymin=20, ymax=90, yticks=[25, 50, 75], yl='left swims (%)',
                                                  vspans=[[50, 200, 'lightgray', 1.0], [350, 500, 'lightgray', 1.0], [650, 800, 'lightgray', 1.0], [950, 1100, 'lightgray', 1.0]])
     plot_black_example = subfig.create_plot(xpos=8.5, ypos=2.5, plot_height=1.4, plot_width=6.5, errorbar_area=True,
                                                  xmin=0, xmax=1150, ymin=20, ymax=90, yticks=[25, 50, 75],
@@ -1556,7 +1556,7 @@ if __name__ == '__main__':
         if i == 0:
             plot_contributions_examples_white_left[i] = subfig.create_plot(xpos=1 + 1.7*i, ypos=1.3, plot_height=0.7, plot_width=1.4, errorbar_area=True,
                                                                  xmin=0, xmax=250, ymin=-0.2, ymax=4.5, yticks=[0, 2, 4],
-                                                                 yticklabels=['0', '2', '4'], yl='Node activity (au)',
+                                                                 yticklabels=['0', '2', '4'], yl='node activity (au)',
                                                                  vspans=[[50, 200, 'lightgray', 1.0], ])
             plot_contributions_examples_white_right[i] = subfig.create_plot(xpos=1 + 1.7*i, ypos=0.5, plot_height=0.7, plot_width=1.4, errorbar_area=True,
                                                                  xmin=0, xmax=250, ymin=-4.5, ymax=0.2, yticks=[-4, -2, 0],
@@ -1600,12 +1600,12 @@ if __name__ == '__main__':
     # Fig. 2i
     plot_timeconstants_overview = fig.create_plot(xpos=12, ypos=7.5, plot_height=2.5, plot_width=2.25,
                                                   xmin=-1, xmax=8, ymin=0, ymax=31, yticks=[0, 5, 10, 15, 20, 25, 30],
-                                                  yticklabels=['0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0'], yl='Time constant (s)',
+                                                  yticklabels=['0', '0.5', '1.0', '1.5', '2.0', '2.5', '3.0'], yl='time constant (s)',
                                                   xticks=[0.5, 2.5, 4.5, 6.5], xticklabels=['\u03C4 motion', '\u03C4 lumi level', '\u03C4 lumi change', '\u03C4 multifeature'],
                                                   xticklabels_rotation=90)
     # Fig. 2j
     plot_weights_overview = fig.create_plot(xpos=15, ypos=7.5, plot_height=2.5, plot_width=2.25,
-                                            xmin=-1, xmax=6, ymin=0, ymax=3.5, yticks=[0, 1, 2, 3], yl='Weight',
+                                            xmin=-1, xmax=6, ymin=0, ymax=3.5, yticks=[0, 1, 2, 3], yl='weight',
                                             xticks=[0.5, 2.5, 4.5], xticklabels=['w motion', 'w lumi level', 'w lumi change'],
                                             xticklabels_rotation=90)
 

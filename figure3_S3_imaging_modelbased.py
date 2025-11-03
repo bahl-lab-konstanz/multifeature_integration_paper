@@ -2053,8 +2053,8 @@ if __name__ == '__main__':
     regions_path = rf'{fig_3_folder_path}\all_masks_indexed.hdf5'
 
     # Get the path to the preprocessed dataframe of an example fish (both the functional plane as well as the overview stack).
-    path_to_example_data = rf'{fig_3_folder_path}\2023-01-19_10-38-59\2023-01-19_10-38-59_preprocessed_data.h5'
-    path_to_example_stack = rf'{fig_3_folder_path}\2023-01-19_12-41-02\2023-01-19_12-41-02_preprocessed_data.h5'
+    path_to_example_data = rf'{fig_3_folder_path}\2023-01-19_10-38-59_preprocessed_data.h5'
+    path_to_example_stack = rf'{fig_3_folder_path}\2023-01-19_12-41-02_preprocessed_data.h5'
 
     # IDs of the example neurons to be plotted.
     neurons_to_plot = [1386, 1032, 1075, 1238, 1055, 516, 354, 357, 649]
@@ -2149,13 +2149,13 @@ if __name__ == '__main__':
                                      xmin=-2, xmax=24, ymin=0, ymax=120,
                                      xticks=[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20, 21, 22,],
                                      xticklabels=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',],
-                                     yticks=[0, 25, 50, 75, 100], yl='Neurons per region')
+                                     yticks=[0, 25, 50, 75, 100], yl='neurons per region')
     # Fig. S4a (The y-axis is split at 2% therefore we need two plots)
     perc_neurons_plot_bottom = sup_fig_3p2.create_plot(xpos=1, ypos=13, plot_height=2.5, plot_width=16.75, #5.25
                                          xmin=-1, xmax=91, ymin=0, ymax=2,
                                          xticks=np.arange(90),
                                          xticklabels=regions_short_names * 6,
-                                         yticks=[0, 0.5, 1.0, 1.5, 2.0], yl='Neurons per region (%)', xticklabels_rotation=90)
+                                         yticks=[0, 0.5, 1.0, 1.5, 2.0], yl='neurons per region (%)', xticklabels_rotation=90)
     perc_neurons_plot_top = sup_fig_3p2.create_plot(xpos=1, ypos=15.5, plot_height=0.7, plot_width=16.75, #5.25
                                          xmin=-2, xmax=92, ymin=2, ymax=12,
                                          yticks=[5, 10,])
@@ -2165,8 +2165,8 @@ if __name__ == '__main__':
                                               xmin=-1, xmax=11, ymin=0, ymax=1200,
                                               yticks=[0, 250, 500, 750, 1000],
                                               xticks=[0, 1, 3, 4, 6, 7, 9, 10],
-                                              xticklabels=['Integrators', 'Change detectors', 'Integrators', 'Change detectors', 'Integrators', 'Change detectors', 'Integrators', 'Change detectors'],
-                                              yl='Number of neurons', xticklabels_rotation=90)
+                                              xticklabels=['integrators', 'change detectors', 'integrators', 'change detectors', 'integrators', 'change detectors', 'integrators', 'change detectors'],
+                                              yl='number of neurons', xticklabels_rotation=90)
 
     # Fig. S3e-f
     subfigs_diff_traces = [create_traces_single_subplots(sup_fig_3, x_l=0.75, y_t=4.9),
@@ -2180,12 +2180,12 @@ if __name__ == '__main__':
                                           xmin=1, xmax=10, ymin=-5, ymax=105,
                                           yticks=[0, 25, 50, 75, 100], xticks=[2, 4, 6, 8, 10],
                                           vspans=[[4., 7, 'lightgray', 1.0], ],
-                                         xl='signal-to-noise-ratio', yl='Correctly classified neurons (%)')
+                                         xl='signal-to-noise-ratio', yl='correctly classified neurons (%)')
     overview_plot_lumi = sup_fig_3.create_plot(xpos=10, ypos=1.0, plot_height=2, plot_width=7.5,
                                           xmin=1, xmax=10, ymin=-5, ymax=105,
                                           yticks=[0, 25, 50, 75, 100], xticks=[2, 4, 6, 8, 10],
                                           vspans=[[4., 7, 'lightgray', 1.0], ],
-                                         xl='signal-to-noise-ratio', yl='Correctly classified neurons (%)')
+                                         xl='signal-to-noise-ratio', yl='correctly classified neurons (%)')
 
     # Plot the example traces (Fig. 3c)
     sub_plot_example_traces(path_to_example_data, path_to_example_stack, neurons_to_plot, example_stack_plot, example_loc_plot, example_traces_plot)
