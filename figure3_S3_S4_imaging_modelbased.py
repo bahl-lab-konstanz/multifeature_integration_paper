@@ -882,7 +882,7 @@ def linear_regression(df, regressors, rval_thresh=0.85):
 def sub_plot_linear_regression_traces(traces_df, subfigss, subfig_loc, subfigoverlap, model_params=[5.73/5, 2.88/5, 14.54/5, 7.61/5, 0.214, 1.922, 2.88]):
     '''
     This function plots the linear regression based traces, and neuron locations, as well as the number of neurons found.
-    This is related to figure S3a-b.
+    This is related to figure S4a-b.
     :param traces_df: The dataframe containing all functional traces. Each row is a neuron.
     :param subfigss: List of subfigures that will show the functional traces of the linear regression based types.
     :param subfig_loc: Subfigure showing the location of linear regression based neurons.
@@ -983,7 +983,7 @@ def sub_plot_linear_regression_traces(traces_df, subfigss, subfig_loc, subfigove
     print(f'{num_bright} unique bright neurons')
     print(f'{num_dark} unique dark neurons')
 
-    # Plot the number of numbers for each type in Fig. S3b as vertical bar plots. The overlapping sections will be gray. We add the mixed color later in Affinity.
+    # Plot the number of numbers for each type in Fig. S4b as vertical bar plots. The overlapping sections will be gray. We add the mixed color later in Affinity.
     # When the subfigss are None, it means the function is called with the control traces df and we will add only the numbers (to columns 9 and 10).
     if subfigss is None and subfig_loc is None:
         subfigoverlap.draw_vertical_bars([9, 9, 9, 9, 9, 9, 9, 10, 10, 10, 10, 10, 10, 10, ],
@@ -1018,7 +1018,7 @@ def sub_plot_linear_regression_traces(traces_df, subfigss, subfig_loc, subfigove
                                                '#D55E00', '#808080', '#F748A5', '#808080', '#9F0162', '#808080', '#404040'])
         subfigoverlap.draw_text(0.5, 1200, 'linear\nregression')
 
-    # If subfigss is not None, it means this function was called using the real traces and we will plot the linear regression based traces in Fig S3a.
+    # If subfigss is not None, it means this function was called using the real traces and we will plot the linear regression based traces in Fig S4a.
     if subfigss is not None:
         # Loop over all functional types, combine left and right.
         for dfL, dfR, subfigs, color, fillcolor in zip([motion_left_med_df, lumi_left_med_df, dark_left_med_df, bright_left_med_df, drive_left_med_df, diff_left_med_df],
@@ -1049,7 +1049,7 @@ def sub_plot_linear_regression_traces(traces_df, subfigss, subfig_loc, subfigove
         avg_mot_lumi_change(model_input, subfigss, *model_params, tau_gcamp=24. / 5, kernel_length=int(150 / 5),
                             window_length=int(20 / 5), linregress=True)
 
-    # If subfig_loc is not None, it means this function was called using the real traces and we will plot the linear regression based locations in Fig S3a.
+    # If subfig_loc is not None, it means this function was called using the real traces and we will plot the linear regression based locations in Fig S4a.
     if subfig_loc is not None:
         # Loop over all functional types.
         for dfL, dfR, color in zip(
@@ -1074,7 +1074,7 @@ def sub_plot_control_and_wta_traces(traces_df, traces_control_df, subfigss, subf
                                     thresh_resp=0.2, thresh_min=0.1, thresh_peaks_diff=1.25, thresh_peaks=1.5, thresh_below=0.9):
     '''
     This function plots the control and wta traces and locations.
-    This is related to figure S3c-d.
+    This is related to figure S4c-d.
     :param traces_df: The dataframe containing all functional traces. Each row is a neuron.
     :param traces_control_df: The dataframe containing all functional control traces. Each row is a neuron.
     :param subfigss: List of subfigures which will show the traces of the control data.
@@ -1248,11 +1248,11 @@ def sub_plot_control(traces_df, traces_control_df, subfig_s_loc_comb, subfigover
                      thresh_resp=0.2, thresh_min=0.1, thresh_peaks_diff=1.25, thresh_peaks=1.5, thresh_below=0.9):
     '''
     This function plots the control locations, as well as the number of neurons per type for both the real as the control traces.
-    This is related to figure 3g and S3b.
+    This is related to figure 3g and S4b.
     :param traces_df: The dataframe containing all functional traces. Each row is a neuron.
     :param traces_control_df: The dataframe containing all functional control traces. Each row is a neuron.
     :param subfig_s_loc_comb: The subfigure showing the location of all functional types for the control traces (Fig. 3g).
-    :param subfigoverlap: The subfigure showing the number of neurons per type for each analysis strategy (Fig. S3b)
+    :param subfigoverlap: The subfigure showing the number of neurons per type for each analysis strategy (Fig. S4b)
     :param thresh_resp: minimum dF/F activity required to be considered part of the functional types.
     :param thresh_min: During non-responses activity cannot go thresh_min above the pre/post stimulus activity.
     :param thresh_peaks_diff: The change detector peak activity of the stronger contrast needs to be thresh_peaks_diff times higher than the peak activity during the weak contrast stimulus.
@@ -1313,7 +1313,7 @@ def sub_plot_control(traces_df, traces_control_df, subfig_s_loc_comb, subfigover
     print(f'{num_bright} unique bright neurons')
     print(f'{num_dark} unique dark neurons')
 
-    # Draw the number of neurons per functional type as a vertical barplot (both unique and overlapping ones) in Fig. S3b. The overlapping sections will be gray bars, the mixed colors are added later in Affinity.
+    # Draw the number of neurons per functional type as a vertical barplot (both unique and overlapping ones) in Fig. S4b. The overlapping sections will be gray bars, the mixed colors are added later in Affinity.
     subfigoverlap.draw_vertical_bars(
         [3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, ],
         [num_lumi, num_motion_lumi_overlap, num_motion, num_motion_drive_overlap, num_drive, num_lumi_drive_overlap, num_motion_drive_lumi_overlap,
@@ -1386,7 +1386,7 @@ def sub_plot_control(traces_df, traces_control_df, subfig_s_loc_comb, subfigover
     num_bright = len(bright_left_df_s) + len(bright_right_df_s) - num_bright_diff_overlap - num_bright_dark_overlap - num_diff_bright_dark_overlap
     num_dark = len(dark_left_df_s) + len(dark_right_df_s) - num_dark_diff_overlap - num_bright_dark_overlap - num_diff_bright_dark_overlap
 
-    # Draw the number of neurons per functional type for the control dataframe as a vertical barplot (both unique and overlapping ones) in Fig. S3b. The overlapping sections will be gray bars, the mixed colors are added later in Affinity.
+    # Draw the number of neurons per functional type for the control dataframe as a vertical barplot (both unique and overlapping ones) in Fig. S4b. The overlapping sections will be gray bars, the mixed colors are added later in Affinity.
     subfigoverlap.draw_vertical_bars([6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, ],
         [num_lumi, num_motion_lumi_overlap, num_motion, num_motion_drive_overlap, num_drive, num_lumi_drive_overlap, num_motion_drive_lumi_overlap,
          num_diff, num_bright_diff_overlap, num_bright, num_bright_dark_overlap, num_dark, num_dark_diff_overlap, num_diff_bright_dark_overlap],
@@ -1551,7 +1551,7 @@ def sub_plot_n_neurons_per_region(traces_df, n_neurons_plot, perc_neurons_plot_b
                                   regions_path, thresh_resp=0.2, thresh_min=0.1, thresh_peaks_diff=1.25, thresh_peaks=1.5, thresh_below=0.9):
     '''
     This figure plots the total number of functional type neurons. And the percentage of functional type neurons per region per fish.
-    This is related to Figure 3h and S3e
+    This is related to Figure 3h and S3a
     :param traces_df: Dataframe with all functional traces. Each row contains one neuron.
     :param n_neurons_plot: Subfigure with the number of neurons per region (Fig. 3h).
     :param perc_neurons_plot_bottom:  subfigure with the percentage of functional type neurons per region per fish. Up from 2 % (the y-axis is split to accommodate for high percentages in several regions).
@@ -1923,7 +1923,7 @@ def get_percentage_correct(traces_df, cell_type_label, thresh_resp=0.2, thresh_m
 def plot_example_synthetic_data(noise_levels, subfigss_diff, subfigss_lumi, n_neurons=402):
     '''
     This function plots the synthetic data example traces for different noise levels.
-    This is related to Fig. S3e-f.
+    This is related to Fig. S4e-f.
     :param noise_levels: List of noise-levels to plot the example data for.
     :param subfigss_diff: List of list of 9 subfigures to show the response of synethetic luminance change detectors to the nine stimuli.
     :param subfigss_lumi: List of list of 9 subfigures to show the response of synthetic luminance integrators to the nine stimuli.
@@ -1993,7 +1993,7 @@ def plot_overview_logical_statements_vs_linear_regression(noise_levels, subfig_d
     '''
     This function plots the performance of logical statements and linear regression in classifying luminance change detectors (representing brief activity profiles) and
     luminance integrators (representing persistent activity profiles). This is based on synthetic data where we know the ground-truth.
-    This is related to Fig. S3g-h.
+    This is related to Fig. S4g-h.
     :param noise_levels: Array with the different noise-levels to test.
     :param subfig_diff: Subfigure to plot the performance on luminance change detectors.
     :param subfig_lumi: Subfigure to plot the performance on luminance integrators.
@@ -2059,7 +2059,7 @@ if __name__ == '__main__':
     # IDs of the example neurons to be plotted.
     neurons_to_plot = [1386, 1032, 1075, 1238, 1055, 516, 354, 357, 649]
 
-    # Noise levels to create examples of synthetic data with (Fig. S3e-f) as well as the logical statements and linear regression fits (Fig. S3g-h)
+    # Noise levels to create examples of synthetic data with (Fig. S4e-f) as well as the logical statements and linear regression fits (Fig. S4g-h)
     noise_levels_example_data = [2.0, 0.55, 0.3]
     noise_levels_full = [0.3, 0.38, 0.45, 0.55, 0.65, 1., 2.0]
 
@@ -2067,7 +2067,7 @@ if __name__ == '__main__':
     model_params = [5.678052396390699, 3.765203515714735, 16.105457978010474, 7.487431450829603, 0.2136764584807561, 2.0003470409289816, 2.850268651613628]
     model_params_linreg = [5.678052396390699/5, 3.765203515714735/5, 16.105457978010474/5, 7.487431450829603/5,  0.2136764584807561, 2.0003470409289816, 2.850268651613628]
 
-    # Select the regions for Figure 3h and S3e. Note, we originally tested all mapzebrain regions before selecting these.
+    # Select the regions for Figure 3h and S3a. Note, we originally tested all mapzebrain regions before selecting these.
     regions = ['inferior_medulla_oblongata', 'intermediate_medulla_oblongata', 'superior_medulla_oblongata',
                'superior_dorsal_medulla_oblongata_stripe_1_(entire)', 'superior_dorsal_medulla_oblongata_stripe_2&3',
                'cerebellum', 'tegmentum',
@@ -2075,7 +2075,7 @@ if __name__ == '__main__':
                'pretectum', 'dorsal_thalamus_proper', 'prethalamus_(ventral_thalamus)',
                'habenula', 'telencephalon', ]
 
-    # Short region names used as plot labels in figure 3h and S3e.
+    # Short region names used as plot labels in figure 3h and S3a.
     regions_short_names = [' ',
                            'inf. MO', 'inter. MO', 'sup. MO',
                            'sup. dMO stripe 1', 'sup. dMO stripe 2&3',
@@ -2090,10 +2090,10 @@ if __name__ == '__main__':
 
     print('Traces are loaded. ')
 
-    # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 3 and S3.
+    # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 3, S3 and S4.
     fig = Figure(fig_width=18, fig_height=17)
     sup_fig_3 = Figure(fig_width=18, fig_height=17)
-    sup_fig_3p2 = Figure(fig_width=18, fig_height=17)
+    sup_fig_4 = Figure(fig_width=18, fig_height=17)
 
     # Fig. 3c
     example_stack_plot = fig.create_plot(xpos=3.75, ypos=14.9, plot_height=2, plot_width=2, axis_off=True,
@@ -2116,14 +2116,14 @@ if __name__ == '__main__':
     # Fig. 3f
     subfigs_traces = create_traces_subplots(fig)
 
-    # Fig. S3d
-    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_3, x_l=4.2, y_t=7.3, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
+    # Fig. S4d
+    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=7.3, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
 
-    # Fig. S3a
-    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_3, x_l=4.2, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
+    # Fig. S4a
+    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
 
-    # Fig. S3c
-    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_3, x_l=13.1, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
+    # Fig. S4c
+    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_4, x_l=13.1, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
 
     # Fig. 3f
     subfigs_locs = create_locs_subplots(fig)
@@ -2134,14 +2134,14 @@ if __name__ == '__main__':
     loc_comb_s_plot = fig.create_plot(xpos=3.25, ypos=4.5, plot_height=3, plot_width=3, axis_off=True,
                                     xmin=30, xmax=800, ymin=850, ymax=80)
 
-    # Fig. S3a
-    sup_loc_comb_plot_linreg = sup_fig_3.create_plot(xpos=0.1, ypos=9.2, plot_height=3, plot_width=3, axis_off=True,
+    # Fig. S4a
+    sup_loc_comb_plot_linreg = sup_fig_4.create_plot(xpos=0.1, ypos=9.2, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
-    # Fig. S3cc
-    sup_loc_comb_plot_ctrl = sup_fig_3.create_plot(xpos=14.8, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    # Fig. S4c
+    sup_loc_comb_plot_ctrl = sup_fig_4.create_plot(xpos=14.8, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
                                                    xmin=30, xmax=800, ymin=850, ymax=80)
-    # Fig. S3d
-    sup_loc_comb_plot_wta = sup_fig_3.create_plot(xpos=9.1, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    # Fig. S4d
+    sup_loc_comb_plot_wta = sup_fig_4.create_plot(xpos=9.1, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
 
     # Fig. 3h
@@ -2151,37 +2151,37 @@ if __name__ == '__main__':
                                      xticklabels=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',],
                                      yticks=[0, 25, 50, 75, 100], yl='neurons per region')
     # Fig. S4a (The y-axis is split at 2% therefore we need two plots)
-    perc_neurons_plot_bottom = sup_fig_3p2.create_plot(xpos=1, ypos=13, plot_height=2.5, plot_width=16.75, #5.25
+    perc_neurons_plot_bottom = sup_fig_3.create_plot(xpos=1, ypos=13, plot_height=2.5, plot_width=16.75, #5.25
                                          xmin=-1, xmax=91, ymin=0, ymax=2,
                                          xticks=np.arange(90),
                                          xticklabels=regions_short_names * 6,
                                          yticks=[0, 0.5, 1.0, 1.5, 2.0], yl='neurons per region (%)', xticklabels_rotation=90)
-    perc_neurons_plot_top = sup_fig_3p2.create_plot(xpos=1, ypos=15.5, plot_height=0.7, plot_width=16.75, #5.25
+    perc_neurons_plot_top = sup_fig_3.create_plot(xpos=1, ypos=15.5, plot_height=0.7, plot_width=16.75, #5.25
                                          xmin=-2, xmax=92, ymin=2, ymax=12,
                                          yticks=[5, 10,])
 
-    # Fig. S3b
-    sup_subfigoverlap = sup_fig_3.create_plot(xpos=10, ypos=11.1, plot_height=5.1, plot_width=2.2,
+    # Fig. S4b
+    sup_subfigoverlap = sup_fig_4.create_plot(xpos=10, ypos=11.1, plot_height=5.1, plot_width=2.2,
                                               xmin=-1, xmax=11, ymin=0, ymax=1200,
                                               yticks=[0, 250, 500, 750, 1000],
                                               xticks=[0, 1, 3, 4, 6, 7, 9, 10],
                                               xticklabels=['integrators', 'change detectors', 'integrators', 'change detectors', 'integrators', 'change detectors', 'integrators', 'change detectors'],
                                               yl='number of neurons', xticklabels_rotation=90)
 
-    # Fig. S3e-f
-    subfigs_diff_traces = [create_traces_single_subplots(sup_fig_3, x_l=0.75, y_t=4.9),
-                           create_traces_single_subplots(sup_fig_3, x_l=3.5, y_t=4.9),
-                           create_traces_single_subplots(sup_fig_3, x_l=6.25, y_t=4.9)]
-    subfigs_lumi_traces = [create_traces_single_subplots(sup_fig_3, x_l=9.75, y_t=4.9, ymax_extra=0.5),
-                           create_traces_single_subplots(sup_fig_3, x_l=12.5, y_t=4.9, ymax_extra=0.5),
-                           create_traces_single_subplots(sup_fig_3, x_l=15.25, y_t=4.9, ymax_extra=0.5)]
-    # Fig. S3g-h
-    overview_plot_diff = sup_fig_3.create_plot(xpos=1, ypos=1.0, plot_height=2, plot_width=7.5,
+    # Fig. S4e-f
+    subfigs_diff_traces = [create_traces_single_subplots(sup_fig_4, x_l=0.75, y_t=4.9),
+                           create_traces_single_subplots(sup_fig_4, x_l=3.5, y_t=4.9),
+                           create_traces_single_subplots(sup_fig_4, x_l=6.25, y_t=4.9)]
+    subfigs_lumi_traces = [create_traces_single_subplots(sup_fig_4, x_l=9.75, y_t=4.9, ymax_extra=0.5),
+                           create_traces_single_subplots(sup_fig_4, x_l=12.5, y_t=4.9, ymax_extra=0.5),
+                           create_traces_single_subplots(sup_fig_4, x_l=15.25, y_t=4.9, ymax_extra=0.5)]
+    # Fig. S4g-h
+    overview_plot_diff = sup_fig_4.create_plot(xpos=1, ypos=1.0, plot_height=2, plot_width=7.5,
                                           xmin=1, xmax=10, ymin=-5, ymax=105,
                                           yticks=[0, 25, 50, 75, 100], xticks=[2, 4, 6, 8, 10],
                                           vspans=[[4., 7, 'lightgray', 1.0], ],
                                          xl='signal-to-noise-ratio', yl='correctly classified neurons (%)')
-    overview_plot_lumi = sup_fig_3.create_plot(xpos=10, ypos=1.0, plot_height=2, plot_width=7.5,
+    overview_plot_lumi = sup_fig_4.create_plot(xpos=10, ypos=1.0, plot_height=2, plot_width=7.5,
                                           xmin=1, xmax=10, ymin=-5, ymax=105,
                                           yticks=[0, 25, 50, 75, 100], xticks=[2, 4, 6, 8, 10],
                                           vspans=[[4., 7, 'lightgray', 1.0], ],
@@ -2195,20 +2195,20 @@ if __name__ == '__main__':
     sub_plot_traces(traces_df, subfigs_traces, subfigs_locs, loc_comb_plot)
     # Add the model predictions to the traces plots (Fig. 3f)
     sub_plot_add_model_prediction_to_traces(subfigs_traces, model_params)
-    # Plot the control traces and locations per functional type (Fig. 3g, S3b)
+    # Plot the control traces and locations per functional type (Fig. 3g, S4b)
     sub_plot_control(traces_df, traces_control_df, loc_comb_s_plot, sup_subfigoverlap)
-    # Plot the number of neurons per region and the percentage of functional type neurons per region per fish (Fig. 3h, S3e).
+    # Plot the number of neurons per region and the percentage of functional type neurons per region per fish (Fig. 3h, S4e).
     sub_plot_n_neurons_per_region(traces_df, n_neurons_plot, perc_neurons_plot_bottom, perc_neurons_plot_top, regions, regions_short_names, regions_path)
-    # Plot the linear regression based traces and locations (Fig. S3a-b)
+    # Plot the linear regression based traces and locations (Fig. S4a-b)
     sub_plot_linear_regression_traces(traces_df, sup_subfigs_traces_linreg, sup_loc_comb_plot_linreg, sup_subfigoverlap,
                                      model_params=model_params_linreg)
-    # Plot the number of linear regression based control traces (Fig. S3b)
+    # Plot the number of linear regression based control traces (Fig. S4b)
     sub_plot_linear_regression_traces(traces_control_df, None, None, sup_subfigoverlap, model_params=model_params_linreg)
-    # Plot the control and WTA traces and locations (Fig. S3c-d)
+    # Plot the control and WTA traces and locations (Fig. S4c-d)
     sub_plot_control_and_wta_traces(traces_df, traces_control_df, sup_subfigs_traces_ctrl, sup_subfigs_traces_wta, sup_loc_comb_plot_ctrl, sup_loc_comb_plot_wta)
-    # Add the model prediction to the control traces (Fig. S3c)
+    # Add the model prediction to the control traces (Fig. S4c)
     sub_plot_add_model_prediction_to_traces(sup_subfigs_traces_ctrl, model_params)
-    # Add the model prediction to the WTA traces (Fig. S3d)
+    # Add the model prediction to the WTA traces (Fig. S4d)
     sub_plot_add_model_prediction_to_traces(sup_subfigs_traces_wta, model_params, wta=True)
     # Plot the synthetic example data for multiple noise-levels
     plot_example_synthetic_data(noise_levels_example_data, subfigs_diff_traces, subfigs_lumi_traces)
@@ -2217,7 +2217,7 @@ if __name__ == '__main__':
 
     fig.save(fig_save_path)
     sup_fig_3.save(supfig_save_path)
-    sup_fig_3p2.save(supfig2_save_path)
+    sup_fig_4.save(supfig2_save_path)
 
     # Note that Figure 3a-b,e only contain explanatory cartoons without actual data and therefore are not part of this code.
 

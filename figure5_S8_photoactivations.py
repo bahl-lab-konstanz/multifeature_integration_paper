@@ -299,7 +299,7 @@ def subfig_all_PA_neurons_loc(subfig_xy, subfig_yz, subfigs_region_counts, PA_da
                               regions_path, video_path=None):
     '''
     This function plots all the PAed neurons in a single location plot as well as the projections per brain region.
-    This relates to Fig. 5d and S6c
+    This relates to Fig. 5d and S8c
     :param subfig_xy: Subfigure showing all PAed neurons in xy view.
     :param subfig_yz: Subfigure showing all PAed neurons in yz view.
     :param subfigs_region_counts: Subfigure showing the count of projections per brain region, split by functional type.
@@ -958,7 +958,7 @@ def PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, main_path, 
                             z_planes_func):
     '''
     This function creates 8 zoomed-in examples of pre- and post photoactivation centered around the target neuron. Besides the target neuron (red outline) also neighbouring cells are shown (cyan) to aid visual matching using landmarks.
-    This is related to figure S6a-b.
+    This is related to figure S8a-b.
     :param plot_funcs: list of 8 subfigures that will show the pre-PA target neuron.
     :param plot_HDs: list of 8 subfigures that will show the post-PA target neuron.
     :param success_rate_plot: Subfigure to plot the success_rate of the photoactivations.
@@ -1099,7 +1099,7 @@ def PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, main_path, 
 if __name__ == '__main__':
     # Provide the path to save the figures.
     fig_save_path = 'C:/users/katja/Desktop/fig_5.pdf'
-    supfig_save_path = 'C:/users/katja/Desktop/fig_S6.pdf'
+    supfig_save_path = 'C:/users/katja/Desktop/fig_S8.pdf'
 
     # Provide the path to the figure_5 folder.
     fig_5_folder_path = r'Z:\Bahl lab member directories\Katja\paper_data\figure_5'
@@ -1387,7 +1387,7 @@ if __name__ == '__main__':
     PA_quality_func_sizes = [100, 70, 70, 70, 70, 70, 70, 70]
     PA_quality_HD_sizes = [350, 350, 175, 175, 175, 350, 350, 350]
 
-    # Prepare the figures for Figure 5 and S6.
+    # Prepare the figures for Figure 5 and S8.
     fig = Figure(fig_width=18, fig_height=17, dpi=900)
     supfig = Figure(fig_width=18, fig_height=17)
 
@@ -1476,7 +1476,7 @@ if __name__ == '__main__':
     dark_xy_plot = fig.create_plot(xpos=3.75, ypos=3.5, plot_height=1., plot_width=1.5525, axis_off=True)
     dark_yz_plot = fig.create_plot(xpos=5.25, ypos=3.5, plot_height=1., plot_width=1 / 1.1565, axis_off=True)
 
-    # Fig. S6c
+    # Fig. S8c
     brain_region_plots = [[]] * 6
     for type in range(6):
         if type == 0:
@@ -1527,7 +1527,7 @@ if __name__ == '__main__':
     drive_lumi_neurons_xy_plot = fig.create_plot(xpos=6.4, ypos=1.5, plot_height=2., plot_width=2, axis_off=True)
     drive_lumi_neurons_yz_plot = fig.create_plot(xpos=8.5, ypos=1.5, plot_height=2, plot_width=2, axis_off=True)
 
-    # Fig. S6a
+    # Fig. S8a
     plot_funcs = []
     plot_HDs = []
     for fig_idx, (func_size, HD_size) in enumerate(zip(PA_quality_func_sizes, PA_quality_HD_sizes)):
@@ -1538,7 +1538,7 @@ if __name__ == '__main__':
         plot_funcs = np.append(plot_funcs, plot_func)
         plot_HDs = np.append(plot_HDs, plot_HD)
 
-    # Fig. S6b
+    # Fig. S8b
     success_rate_plot = supfig.create_plot(xpos=1, ypos=0.5, ymin=0, ymax=2, xmin=0, xmax=1, plot_width=3.6, plot_height=1,
                                         xticks=[0, 0.25, 0.5, 0.75, 1], xticklabels=['0', '25', '50', '75', '100'],
                                         xl='amount (%)', legend_xpos=5., legend_ypos=1.5)
@@ -1600,7 +1600,7 @@ if __name__ == '__main__':
                           drive_lumi_neurons_yz_plot, fig_5_folder_path,
                           zoomin_volume_file_base_names, zoomin_cell_folders, zoomin_swc_ids, zoomin_types)
 
-    # Plot the 8 example neurons for mapping quality checks (Fig. S6a-b)
+    # Plot the 8 example neurons for mapping quality checks (Fig. S8a-b)
     PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, fig_5_folder_path, PA_quality_cell_folders,
                             PA_quality_file_paths_functional, PA_quality_cell_ids, PA_quality_extra_cell_ids,
                             PA_quality_file_paths_HD, PA_quality_HD_xs, PA_quality_HD_ys, PA_quality_HD_zs,

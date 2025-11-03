@@ -13,7 +13,7 @@ from multifeature_integration_paper.useful_small_funcs import cohens_d, create_c
 def subplot_traces_overview(traces_df, subfigs, regions_path, regions):
     '''
     This function plots the overview of all functional activity used for the PCA analysis.
-    This is related to Figure S4a.
+    This is related to Figure S5a.
     :param traces_df: Dataframe containing the single trial activity of all neurons.
     :param subfigs: List of 9 subfigures to plot the functional activity for each stimulus.
     :param regions_path: Path to the hdf5 file containing all mapzebrain regions.
@@ -222,7 +222,7 @@ def subplot_pca_wholebrain(traces_df, subfig_expvar, subfig_expvar_zoomin, subfi
                            subfig_dist, brain_xy_overview_plot, brain_yz_overview_plot):
     '''
     This function plots the PCA analysis of the total brain with the explained variance over PCs.
-    This is related to Fig. S4b-d, column 1 in c-d
+    This is related to Fig. S5b-d, column 1 in c-d
      :param traces_df: Dataframe with the single trial functional activity per cell.
     :param subfig_expvar: Subfigure to show the full explained variance over PCs.
     :param subfig_expvar_zoomin: Subfigure to show the explained variance of the first 200 PCs.
@@ -419,7 +419,7 @@ def subplot_pca_per_region(traces_df, regions_path, regions, subfig_pca_regions,
                            brain_yz_overview_plot_regions):
     '''
     This function plots the PCA analysis per brain-region.
-    This is related to Fig. S4c-d, column 2-4.
+    This is related to Fig. S5c-d, column 2-4.
     :param traces_df: Dataframe with the single trial functional activity per cell.
     :param regions_path: Path to the hdf5 file containing all mapzebrain regions.
     :param regions: List with mapzebrain region names to analysis.
@@ -647,7 +647,7 @@ def subplot_pca_per_region(traces_df, regions_path, regions, subfig_pca_regions,
 
 if __name__ == '__main__':
     # Provide the path to save the figure.
-    fig_save_path = 'C:/users/katja/Desktop/fig_S4.pdf'
+    fig_save_path = 'C:/users/katja/Desktop/fig_S5.pdf'
 
     # Provide the path to the figure_3 folder.
     fig_3_folder_path = r'Z:\Bahl lab member directories\Katja\paper_data\figure_3'
@@ -657,7 +657,7 @@ if __name__ == '__main__':
     traces_df = pd.read_csv(fr'{fig_3_folder_path}\imaging_traces_trials_baseline.csv')
     print('Traces loaded')
 
-    # Get the path to the hdf5 file containing all mapzebrain regions and define the major ones to analyse (Fig. S4c-d)
+    # Get the path to the hdf5 file containing all mapzebrain regions and define the major ones to analyse (Fig. S5c-d)
     regions_path = fr'{fig_3_folder_path}\all_masks_indexed.hdf5'
     regions = ['prosencephalon_(forebrain)', 'mesencephalon_(midbrain)', 'rhombencephalon_(hindbrain)']
 
@@ -682,10 +682,10 @@ if __name__ == '__main__':
             region_df = traces_df[region_ids == region_id]
             try_out_3d_rotation(region_df)
 
-    # Prepare the figures for Figure S4.
+    # Prepare the figures for Figure S5.
     fig = Figure(fig_width=18, fig_height=17)
 
-    # Fig. S4a
+    # Fig. S5a
     subfigs_trial_traces = [[]] * 9
     for t in range(9):
         if t == 2:
@@ -699,7 +699,7 @@ if __name__ == '__main__':
                                                       plot_width=3.5, axis_off=True,
                                                       xmin=0, xmax=170, ymin=108118 + 50000, ymax=0)
 
-    # Fig. S4b
+    # Fig. S5b
     subfig_expvar = fig.create_plot(xpos=15, ypos=11.5, plot_height=2, plot_width=2, xmin=0, xmax=3240, ymin=0, ymax=1,
                                     xl='PC', yl='cum. explained (%)', xticks=[0, 1000, 2000, 3000],
                                     yticks=[0, 0.25, 0.5, 0.75, 1],
@@ -709,7 +709,7 @@ if __name__ == '__main__':
                                            yticks=[0, 0.25, 0.5, 0.75, 1],
                                            yticklabels=['0', '25', '50', '75', '100'])
 
-    # Fig. S4c 1st column
+    # Fig. S5c 1st column
     subfig_pca = fig.create_plot3D(xpos=1, ypos=5.5, plot_height=3.4, plot_width=3.4, xmin=-1.1 * 0.4, xmax=1.1 * 0.4,
                                    ymin=-1.1 * 0.4,
                                    ymax=1.1 * 0.4,
@@ -739,17 +739,17 @@ if __name__ == '__main__':
                                         zticklabels=['', '', ''],
                                         elev=52.22, azim=-38.07)
 
-    # Fig. S4d first column
+    # Fig. S5d first column
     subfig_dist = fig.create_plot(xpos=1, ypos=0.5, plot_height=2.75, plot_width=3.4, xmin=0, xmax=120, ymin=0,
                                   ymax=1.0,
                                   yticks=[0.0, 0.5, 1.0, ], vspans=[[20, 80, 'lightgray', 1.0]],
                                   yl='distance in PC1-3')
 
-    # Fig. S4c brain region reference overview.
+    # Fig. S5c brain region reference overview.
     brain_xy_overview_plot = fig.create_plot(xpos=1., ypos=8.3, plot_height=2, plot_width=2 / 2.274, axis_off=True)
     brain_yz_overview_plot = fig.create_plot(xpos=2.2, ypos=8.3, plot_height=2, plot_width=2 / 4.395, axis_off=True)
 
-    # Prepare lists for the region-based plots in Fig. S4c-d
+    # Prepare lists for the region-based plots in Fig. S5c-d
     subfig_pca_regions = [[]] * len(regions)
     subfig_pca_mot_regions = [[]] * len(regions)
     subfig_pca_lumi_regions = [[]] * len(regions)
@@ -767,7 +767,7 @@ if __name__ == '__main__':
     # Loop over the brain-regions.
     for r, elev, azim, xmax, ymax, zmax, dmax, dtick in zip(range(len(regions)), elevs, azims, xmaxs, ymaxs, zmaxs,
                                                             dmaxs, dticks):
-        # Fig. S4c column 2-4
+        # Fig. S5c column 2-4
         subfig_pca_regions[r] = fig.create_plot3D(xpos=5.5 + r * 4, ypos=5.5, plot_height=3.4, plot_width=3.4,
                                                   xmin=-1.1 * xmax, xmax=1.1 * xmax, ymin=-1.1 * ymax,
                                                   ymax=1.1 * ymax,
@@ -804,12 +804,12 @@ if __name__ == '__main__':
                                                        yticklabels=['', '', '', '', ''],
                                                        zticklabels=['', '', ''],
                                                        elev=elev, azim=azim)
-        # Fig. S4d column 2-4
+        # Fig. S5d column 2-4
         subfig_dist_regions[r] = fig.create_plot(xpos=5.5 + r * 4, ypos=0.5, plot_height=2.75, plot_width=3, xmin=0,
                                                  xmax=120, ymin=0,
                                                  ymax=dmax,
                                                  yticks=dtick, vspans=[[20, 80, 'lightgray', 1.0]])
-        # Fig. S4c brain region reference in column 2-4
+        # Fig. S5c brain region reference in column 2-4
         brain_xy_overview_plot_regions[r] = fig.create_plot(xpos=5.5 + r * 4, ypos=8.3, plot_height=2,
                                                             plot_width=2 / 2.274,
                                                             axis_off=True)
@@ -817,12 +817,12 @@ if __name__ == '__main__':
                                                             plot_width=2 / 4.395,
                                                             axis_off=True)
 
-    # Plot the overview of the functional activity (Fig. S4a)
+    # Plot the overview of the functional activity (Fig. S5a)
     subplot_traces_overview(traces_df, subfigs_trial_traces, regions_path, regions)
-    # Plot the whole-brain PCA analayis (Fig. S4b-d - 1st columns in c-d)
+    # Plot the whole-brain PCA analayis (Fig. S5b-d - 1st columns in c-d)
     subplot_pca_wholebrain(traces_df, subfig_expvar, subfig_expvar_zoomin, subfig_pca, subfig_pca_mot, subfig_pca_lumi,
                            subfig_dist, brain_xy_overview_plot, brain_yz_overview_plot)
-    # Plot the per-region PCA analysis (Fig. S4c-d - 2-4th columns)
+    # Plot the per-region PCA analysis (Fig. S5c-d - 2-4th columns)
     subplot_pca_per_region(traces_df, regions_path, regions, subfig_pca_regions, subfig_pca_mot_regions,
                            subfig_pca_lumi_regions, subfig_dist_regions, brain_xy_overview_plot_regions,
                            brain_yz_overview_plot_regions)
