@@ -16,13 +16,18 @@ rcParams['font.size'] = 6
 # ===================================================
 # USER CONFIGURATION
 # ===================================================
+
+# Provide paths to the dowloaded data folders
 output_paths = [
-    r'X:\Bahl lab member directories\Katja\paper_data\figure_4\20250331',
-    r'X:\Bahl lab member directories\Katja\paper_data\figure_4\20241112',
-    r'X:\Bahl lab member directories\Katja\paper_data\figure_4\20250120',
-    r'X:\Bahl lab member directories\Katja\paper_data\figure_4\20250217',
-    r'X:\Bahl lab member directories\Katja\paper_data\figure_4\20250408'
+    r'X:\Bahl lab member directories\Katja\paper_data\figure_4_part1\20250331',
+    r'X:\Bahl lab member directories\Katja\paper_data\figure_4_part1\20241112',
+    r'X:\Bahl lab member directories\Katja\paper_data\figure_4_part1\20250120',
+    r'X:\Bahl lab member directories\Katja\paper_data\figure_4_part2\20250217',
+    r'X:\Bahl lab member directories\Katja\paper_data\figure_4_part1\20250408'
 ]
+
+# Provide saving path
+save_base = r'Y:\M11 2P mircroscopes\Sophie\ExpWithKatja\Random8cells'
 
 file_bases = [
     '2025-03-31_11-46-00_fish000_setup0_arena0_functional',
@@ -33,7 +38,6 @@ file_bases = [
 ]
 
 fish_labels = [f"fish {i}" for i in range(1, len(output_paths) + 1)]
-save_base = r'Y:\M11 2P mircroscopes\Sophie\ExpWithKatja\Random8cells_gadlabels_dashed'
 
 # ===================================================
 # HELPERS
@@ -248,6 +252,7 @@ for ax in axes.flat[len(sampled):]:
 rcParams['svg.fonttype'] = 'none'
 fig.savefig(f"{save_base}.svg", dpi=300, bbox_inches="tight")
 fig.savefig(f"{save_base}.png", dpi=300, bbox_inches="tight")
-print(f"\n✅ Saved random 8-cell figure (dashed red contour in first panel):\n{save_base}.svg\n{save_base}.png")
+fig.savefig(f"{save_base}.pdf", dpi=300, bbox_inches="tight")
+print(f"\n✅ Saved random 8-cell figure (dashed red contour in first panel):\n{save_base}.svg\n{save_base}.png\n{save_base}.pdf")
 plt.show()
 plt.close(fig)
