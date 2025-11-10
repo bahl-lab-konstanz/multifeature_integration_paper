@@ -8,6 +8,8 @@ Katja Slangewal, Sophie Aimon, Maxim Q. Capelle, Florian Kämpf, Heike Naumann, 
 BioRxiv DOI: https://doi.org/10.1101/2025.08.12.669772
 
 ---
+First install the mf_env python environment using the yml file in this package. 
+
 The code and corresponding data is split per figure. 
 
 Before starting, download the data here:
