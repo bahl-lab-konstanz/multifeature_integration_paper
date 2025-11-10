@@ -1664,7 +1664,6 @@ def subplot_lumi_integrator_check(traces_df, subfigs_traces, loc_plot, tau_scatt
     loc_plot.draw_line([420, 520], [780, 780], lc='k')
     loc_plot.draw_text(470, 820, '100\u00b5m')
 
-    tau_scatter.draw_line([-1, 3], [2.4, 2.4], lc='#404040')
     # Loop over each fit and get the timeconstants for the strong, medium and weak contrast levels.
     taus_per_fish = np.zeros((len(traces_df['datetime'].unique()), 3))
     for fish_id, date_time in enumerate(traces_df['datetime'].unique()):
@@ -2339,7 +2338,7 @@ if __name__ == '__main__':
                                   yticks=[0, 1, 2, 3, 4, 5],
                                   xticks=[0, 1, 2,],
                                   xticklabels=['strong', 'medium', 'weak', ],
-                                  yl='timeconstant (s)')
+                                  yl='time constant (s)')
 
     # Fig. S4b
     sup_subfigoverlap = sup_fig_4.create_plot(xpos=10, ypos=12.1, plot_height=5.1, plot_width=2.2,
