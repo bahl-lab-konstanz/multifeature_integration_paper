@@ -2001,3 +2001,129 @@ def logic_regression_right_lumi_wta(traces_df, thresh_resp=0.2, thresh_below=0.9
                   )
 
     return traces_df[good_cells]
+
+def logic_regression_left_lumi_single(traces_df, thresh_resp=0.2, thresh_below=0.9, thresh_min=0.1, shuffle_stim_idx=False):
+    '''
+    This function contains the logical statements to identify leftward luminance integrators based on the luminance integrator experiment stimulus set: lumi_[left/right]_weak_dots_off and lumi_off_dots_[left/right].
+    :param traces_df: The dataframe containing for each neuron the average functional activity including the average response pre-stimulus (a), early during stimulus (b), late during stimulus (c), early post-stimulus (d), late post-stimulus (e).
+    :param thresh_resp: Threshold of minimum response in dF/F0 during luminance c.
+    :param thresh_below: Threshold in ratio that the activity should be below during decrease in activity.
+    :param thresh_min: Threshold in dF/F0 that the activity cannot cross during stimuli where no activity is expected.
+    :param shuffle_stim_idx: If TRUE the stimulus indexes and responses (a-e) are randomly picked (useful as shuffled control).
+    :return: subset of traces_df containing only leftward luminance integrators.
+    '''
+    # Create stimulus name shorthands to increase readability and to make stimulus shuffling easier.
+    ll_do = 'lumi_left_weak_dots_off'
+    lr_do = 'lumi_right_weak_dots_off'
+    lo_dl = 'lumi_off_dots_left'
+    lo_dr = 'lumi_off_dots_right'
+    a = 'a'
+    b = 'b'
+    c = 'c'
+    d = 'd'
+    e = 'e'
+
+    # If shuffle_stim_idx is True, shuffle the stimuli and response idxes.
+    if shuffle_stim_idx:
+        ll_do = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lr_do = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lo_dl = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lo_dr = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        a = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        b = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        c = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        d = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        e = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+
+    # Select the good cells based on a list of logical statements. The first statement sanity checks that the neuron is in the brain,
+    # the second block of statements checks that the minimal activity level during the relevant stimulus is met.
+    good_cells = ((traces_df['ZB_z'].astype(float) > 0) &
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) > thresh_resp) &
+
+                  # Next check that the response during late stimulus (c) is higher than pre (a) and late post (e) stimulus.
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) > traces_df[f'{ll_do}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) > traces_df[f'{ll_do}_resp_{e}'].astype(float)) &
+
+                  # Next check that the non-responses are actually non-responses: late stimulus (c) < threshold + pre (a) and threshold + post(e)
+                  (traces_df[f'{lo_dl}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dl}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{lo_dl}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dl}_resp_{e}'].astype(float)) &
+                  (traces_df[f'{lo_dr}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dr}_resp_{a}'].astype( float)) &
+                  (traces_df[f'{lo_dr}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dr}_resp_{e}'].astype(float)) &
+
+                  # Next check that the decreased responses are low enough: late stimulus (c) < ratio_threshold * pre (a) and late post (e).
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) < thresh_below * traces_df[f'{lr_do}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) < thresh_below * traces_df[f'{lr_do}_resp_{e}'].astype(float)) &
+
+                  # Next check for temporal integration: late (c) higher than early (b) stimulus.
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) > traces_df[f'{ll_do}_resp_{b}'].astype(float))
+
+                  )
+
+    return traces_df[good_cells]
+
+def logic_regression_right_lumi_single(traces_df, thresh_resp=0.2, thresh_below=0.9, thresh_min=0.1, shuffle_stim_idx=False):
+    '''
+    This function contains the logical statements to identify rightward WTA luminance integrators based on the full stimulus set of 9 stimuli: lumi_[off/left/right]_dots_[off/left/right].
+    :param traces_df: The dataframe containing for each neuron the average functional activity including the average response pre-stimulus (a), early during stimulus (b), late during stimulus (c), early post-stimulus (d), late post-stimulus (e).
+    :param thresh_resp: Threshold of minimum response in dF/F0 during luminance c.
+    :param thresh_below: Threshold in ratio that the activity should be below during decrease in activity.
+    :param thresh_min: Threshold in dF/F0 that the activity cannot cross during stimuli where no activity is expected.
+    :param shuffle_stim_idx: If TRUE the stimulus indexes and responses (a-e) are randomly picked (useful as shuffled control).
+    :return: subset of traces_df containing only rightward WTA luminance integrators.
+    '''
+    # Create stimulus name shorthands to increase readability and to make stimulus shuffling easier.
+    ll_do = 'lumi_left_weak_dots_off'
+    lr_do = 'lumi_right_weak_dots_off'
+    lo_dl = 'lumi_off_dots_left'
+    lo_dr = 'lumi_off_dots_right'
+    a = 'a'
+    b = 'b'
+    c = 'c'
+    d = 'd'
+    e = 'e'
+
+    # If shuffle_stim_idx is True, shuffle the stimuli and response idxes.
+    if shuffle_stim_idx:
+        ll_do = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lr_do = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lo_dl = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        lo_dr = np.random.choice(
+            ['lumi_left_weak_dots_off',  'lumi_right_weak_dots_off', 'lumi_off_dots_off', 'lumi_off_dots_left', 'lumi_off_dots_right'])
+        a = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        b = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        c = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        d = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+        e = np.random.choice(['a', 'b', 'c', 'd', 'e'])
+
+    # Select the good cells based on a list of logical statements. The first statement sanity checks that the neuron is in the brain,
+    # the second block of statements checks that the minimal activity level during the relevant stimulus is met.
+    good_cells = ((traces_df['ZB_z'].astype(float) > 0) &
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) > thresh_resp) &
+
+                  # Next check that the response during late stimulus (c) is higher than pre (a) and late post (e) stimulus.
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) > traces_df[f'{lr_do}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) > traces_df[f'{lr_do}_resp_{e}'].astype(float)) &
+
+                  # Next check that the non-responses are actually non-responses: late stimulus (c) < threshold + pre (a) and threshold + post(e)
+                  (traces_df[f'{lo_dl}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dl}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{lo_dl}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dl}_resp_{e}'].astype(float)) &
+                  (traces_df[f'{lo_dr}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dr}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{lo_dr}_resp_{c}'].astype(float) < thresh_min + traces_df[f'{lo_dr}_resp_{e}'].astype(float)) &
+
+                  # Next check that the decreased responses are low enough: late stimulus (c) < ratio_threshold * pre (a) and late post (e).
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) < thresh_below * traces_df[f'{ll_do}_resp_{a}'].astype(float)) &
+                  (traces_df[f'{ll_do}_resp_{c}'].astype(float) < thresh_below * traces_df[f'{ll_do}_resp_{e}'].astype(float)) &
+
+                  # Next check for temporal integration: late (c) higher than early (b) stimulus.
+                  (traces_df[f'{lr_do}_resp_{c}'].astype(float) > traces_df[f'{lr_do}_resp_{b}'].astype(float))
+
+                  )
+
+    return traces_df[good_cells]

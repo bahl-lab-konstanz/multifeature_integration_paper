@@ -487,8 +487,9 @@ def avg_mot_lumi_change_withmotinhib(model_input, tau_mot=4.26, tau_ph_eye=12.66
     left_integrated_mot = convolve1d(left_input_mot, exp_kernel_mot)
     right_integrated_mot = convolve1d(right_input_mot, exp_kernel_mot)
     # Compute the mutual inhibition between the motion nodes (and make sure they remain positive).
+    left_integrated_mot_preinhib = left_integrated_mot
     left_integrated_mot = left_integrated_mot - w_mot_inhib * right_integrated_mot
-    right_integrated_mot = right_integrated_mot - w_mot_inhib * left_integrated_mot
+    right_integrated_mot = right_integrated_mot - w_mot_inhib * left_integrated_mot_preinhib
     left_integrated_mot[left_integrated_mot < 0] = 0
     right_integrated_mot[right_integrated_mot < 0] = 0
 

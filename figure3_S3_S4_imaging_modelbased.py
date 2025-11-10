@@ -1,14 +1,17 @@
 import h5py
 import numpy as np
 import pandas as pd
+import navis
 from scipy.stats import linregress
 from analysis_helpers.analysis.utils.figure_helper import Figure
 from scipy.ndimage import convolve1d
 from matplotlib import cm
+from scipy.optimize import curve_fit
 from matplotlib.colors import ListedColormap
+from scipy.stats import ttest_rel
 from multifeature_integration_paper.logic_regression_functions import logic_regression_left_motion, logic_regression_left_drive, logic_regression_left_bright, logic_regression_left_dark, logic_regression_left_diff, logic_regression_left_lumi, logic_regression_right_motion, logic_regression_right_drive, logic_regression_right_bright, logic_regression_right_dark, logic_regression_right_diff, logic_regression_right_lumi
-from multifeature_integration_paper.logic_regression_functions import logic_regression_right_motion_wta, logic_regression_left_motion_wta, logic_regression_left_lumi_wta, logic_regression_right_lumi_wta
-from multifeature_integration_paper.useful_small_funcs import rolling_end_window, create_combined_region_npy_mask
+from multifeature_integration_paper.logic_regression_functions import logic_regression_right_motion_wta, logic_regression_left_motion_wta, logic_regression_left_lumi_wta, logic_regression_right_lumi_wta, logic_regression_left_lumi_single, logic_regression_right_lumi_single
+from multifeature_integration_paper.useful_small_funcs import rolling_end_window, create_combined_region_npy_mask, cohens_d
 
 def get_stim_input(stim_len, stim_type, zero_coh=0.1):
     '''
@@ -420,8 +423,49 @@ def get_stim_input_regression(stim_len, stim_type, zero_coh=0.1):
 
     return left_input_mot, right_input_mot, left_input_lumi, right_input_lumi
 
-def create_traces_single_subplots(fig, x_l=7.5, y_t=10., x_ss=0.75, y_ss=0.75, ymax_extra=0):
+def create_lumiint_traces_subplots(fig, x_l=7.5, y_t=9., x_ss=1, y_ss=2):
+    '''
+    This function creates a list with the subfigures for the activity traces of luminance integrators during the luminance integration experiment.
+    :param fig: The figure to plot the subfigures in.
+    :param x_l: left-most x coordinate of the subfigures.
+    :param y_t: Top-most y coordinate of the subfigures.
+    :param x_ss: small-step size x between the stimuli panels.
+    :return: List of four subfigures for each contrast level.
+    '''
+    lumi_traces_plota = fig.create_plot(xpos=x_l, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    lumi_traces_plotb = fig.create_plot(xpos=x_l+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    lumi_traces_plotc = fig.create_plot(xpos=x_l+x_ss+x_ss, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    lumi_traces_plotd = fig.create_plot(xpos=x_l, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
+    lumi_traces_plote = fig.create_plot(xpos=x_l+x_ss, ypos=y_t-y_ss, plot_height=0.75, plot_width=0.75, axis_off=True,
+                                          xmin=-5, xmax=62, ymin=-0.35, ymax=0.8,
+                                          vspans=[[10, 40, 'lightgray', 1.0], ])
 
+    lumi_traces_plots = [lumi_traces_plota, lumi_traces_plotb, lumi_traces_plotc, lumi_traces_plotd, lumi_traces_plote]
+
+    subfigs_traces = [lumi_traces_plots, ]
+
+    return subfigs_traces
+
+
+def create_traces_single_subplots(fig, x_l=7.5, y_t=10., x_ss=0.75, y_ss=0.75, ymax_extra=0):
+    '''
+    This function creates a list of the subfigures for the activity traces of one functional type.
+    :param fig: The figure to plot the subfigures in.
+    :param x_l: left-most x coordinate of the subfigures.
+    :param y_t: Top-most y coordinate of the subfigures.
+    :param x_ss: small-step size x between the stimuli panels.
+    :param y_ss: small-step size y between the stimuli panels.
+    :param ymax_extra: Option to increase the y-axis by ymax_extra amount
+    :return: List of nine subfigures for each functional type.
+    '''
     traces_plota = fig.create_plot(xpos=x_l, ypos=y_t, plot_height=0.75, plot_width=0.75, axis_off=True,
                                           xmin=-5, xmax=62, ymin=-0.55, ymax=1.2 + ymax_extra,
                                           vspans=[[10, 40, 'lightgray', 1.0], ])
@@ -1547,13 +1591,171 @@ def sub_plot_total_cells(traces_df, subfig):
 
     return
 
-def sub_plot_n_neurons_per_region(traces_df, n_neurons_plot, perc_neurons_plot_bottom, perc_neurons_plot_top, regions, regions_short_names,
+
+def exponential_func(t, a, tau, b):
+    '''
+    This function contains the exponential function fitted to the luminance integration activity.
+    :param t: Time array.
+    :param a: Scaling factor.
+    :param tau: Timeconstant.
+    :param b: Offset bias
+    :return: Array with outcome of the exponential function.
+    '''
+    return a * (1-np.exp(-t/tau)) + b
+
+def subplot_lumi_integrator_check(traces_df, subfigs_traces, loc_plot, tau_scatter,
+                                  thresh_resp=0.2, thresh_min=0.1, thresh_below=0.9):
+    '''
+    This function plots the functional activity and location of tectal luminance integrator neurons for 3 different contrast levels. It also shows the fitted timeconstant per fish.
+    This is related to Figure S3b-d.
+    :param traces_df: Dataframe with all functional traces from the luminance integrator experiment. Each row contains one neuron.
+    :param subfigs_traces: Subfigure to show the 3 functional traces for strong, medium and weak contrast.
+    :param loc_plot: Subfigure to show the location of all tectal luminance integrators.
+    :param tau_scatter: Subfigure to show the fitted time-constant across contrast levels per fish.
+    :param thresh_resp: minimum dF/F activity required to be considered part of the functional types.
+    :param thresh_min: During non-responses activity cannot go thresh_min above the pre/post stimulus activity.
+    :param thresh_below: The decrease in activity of the luminance integrators needs to go thresh_below times lower than the pre/post stimulus activity.
+    '''
+    # We select all luminance integrator neurons among the tectal neurons.
+    lumi_left_df = logic_regression_left_lumi_single(traces_df, thresh_resp=thresh_resp, thresh_below=thresh_below, thresh_min=thresh_min)
+    lumi_right_df = logic_regression_right_lumi_single(traces_df, thresh_resp=thresh_resp, thresh_below=thresh_below, thresh_min=thresh_min)
+
+    # We plot the functional activity and location of the tectal luminance integrator neurons.
+    dfL = lumi_left_df
+    dfR = lumi_right_df
+    subfigs = subfigs_traces[0]
+    color = '#E69F00'
+    fillcolor = '#F7D280'
+
+    # The left neurons are plotted as solid circles, the right neurons are plotted as open circles. Here split with a seperate figure for each functional type.
+    loc_plot.draw_scatter(dfL['ZB_x'].astype(float) * 0.798, dfL['ZB_y'].astype(float) * 0.798, pc=color, ec=color, ps=0.75, elw=0.25, alpha=0.75)
+    loc_plot.draw_scatter(dfL['ZB_z'].astype(float) * 2 + 515, dfL['ZB_y'].astype(float) * 0.798, pc=color, ec=color, ps=0.75, elw=0.25, alpha=0.75)
+    loc_plot.draw_scatter(dfR['ZB_x'].astype(float) * 0.798, dfR['ZB_y'].astype(float) * 0.798, pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
+    loc_plot.draw_scatter(dfR['ZB_z'].astype(float) * 2 + 515, dfR['ZB_y'].astype(float) * 0.798, pc='w', ec=color, ps=0.75, elw=0.25, alpha=0.75)
+
+    for subfig, stimL, stimR in zip(subfigs, ['lumi_left_strong_dots_off',  'lumi_left_medium_dots_off',  'lumi_left_weak_dots_off',
+                                              'lumi_off_dots_left', 'lumi_off_dots_off'],
+                                    ['lumi_right_strong_dots_off', 'lumi_right_medium_dots_off', 'lumi_right_weak_dots_off',
+                                     'lumi_off_dots_right', 'lumi_off_dots_off']
+                                    ):
+
+        # Get the functional activity and the exponential fit.
+        median_line = np.array([np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 50) for i in range(120)])
+        popt, pcov = curve_fit(exponential_func, np.arange(10, 40, 0.5), median_line[20:80], p0=[1.0, 1.0, 0.0], bounds=[(0, 0, -10), (100, 60, 10)])
+        a_fit, tau_fit, b_fit = popt
+        print(a_fit, tau_fit, b_fit)
+
+        # Plot the activity (median and quartile range) and the exponential fit.
+        subfig.draw_line(np.arange(0, 60, 0.5), [np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 50) for i in range(120)],
+                         yerr_neg=np.array([np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 50) for i in range(120)]) - np.array([np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 25) for i in range(120)]),
+                         yerr_pos=np.array([np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 75) for i in range(120)]) - np.array([np.nanpercentile(np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)), 50) for i in range(120)]),
+                         lc=color, lw=1, eafc=fillcolor, eaalpha=1.0, ealw=1, eaec=fillcolor)
+        subfig.draw_line(np.arange(10, 40, 0.5), exponential_func(np.arange(10, 40, 0.5), *popt), lc='k', lw=0.3)
+
+    # Add the scale bars to the functional activity
+    subfigs[0].draw_line([-4, -4], [0, 0.5], lc='k')
+    subfigs[4].draw_line([40, 60], [-0.34, -0.34], lc='k')
+    subfigs[4].draw_text(50, -0.6, '20s')
+
+    # Draw red boxes as outlines to later fit the ZBRAIN cartoon outline.
+    loc_plot.draw_line([35, 475, 475, 35, 35], [845, 845, 85, 85, 845], lc='r')
+    loc_plot.draw_line([545, 795, 795, 545, 545], [845, 845, 85, 85, 845], lc='r')
+    # Draw the scale bar.
+    loc_plot.draw_line([420, 520], [780, 780], lc='k')
+    loc_plot.draw_text(470, 820, '100\u00b5m')
+
+    tau_scatter.draw_line([-1, 3], [2.4, 2.4], lc='#404040')
+    # Loop over each fit and get the timeconstants for the strong, medium and weak contrast levels.
+    taus_per_fish = np.zeros((len(traces_df['datetime'].unique()), 3))
+    for fish_id, date_time in enumerate(traces_df['datetime'].unique()):
+        print(f'Fish {date_time}')
+        # Select the data for a single fish.
+        dfL = lumi_left_df[traces_df['datetime'] == date_time]
+        dfR = lumi_right_df[traces_df['datetime'] == date_time]
+        print(f'N numbers: {len(dfL)} {len(dfR)}')
+        # Loop over the three stimuli.
+        for stimL, stimR, stim_x_idx in zip(['lumi_left_strong_dots_off', 'lumi_left_medium_dots_off',
+                                                     'lumi_left_weak_dots_off'],
+                                                    ['lumi_right_strong_dots_off', 'lumi_right_medium_dots_off',
+                                                     'lumi_right_weak_dots_off'],
+                                                    [0, 1, 2, ]
+                                                    ):
+            # Get the median response of the single fish.
+            median_line = np.array([np.nanpercentile(
+                np.append(dfL[f'{stimL}_avg_trace_{i}'].astype(float), dfR[f'{stimR}_avg_trace_{i}'].astype(float)),
+                50) for i in range(120)])
+            # Fit the time constant.
+            popt, pcov = curve_fit(exponential_func, np.arange(10, 40, 0.5), median_line[20:80], p0=[1.0, 1.0, 0.0], bounds=[(0, 0, -10), (100, 60, 10)])
+            a_fit, tau_fit, b_fit = popt
+            print(a_fit, tau_fit, b_fit)
+            # Store the data and draw the scatter point.
+            taus_per_fish[fish_id, stim_x_idx] = tau_fit
+            tau_scatter.draw_scatter([stim_x_idx, ], [tau_fit], pc='#E69F00', ec=None)
+
+        tau_scatter.draw_line([0, 1, 2, ], taus_per_fish[fish_id, :], lc='gray', lw=0.3)
+
+    # We check whether there is a signficant increase in the timeconstant of medium vs strong contrasts. The pval is Bonferonni corrected for 2 tests.
+    tau_scatter.draw_line([0, 0, 1, 1], [4.7, 4.8, 4.8, 4.7], lc='k')
+    _, pval = ttest_rel(taus_per_fish[:, 1], taus_per_fish[:, 0], alternative='greater')
+    if pval < 0.001/2:
+        tau_scatter.draw_text(0.5, 5, '***')
+    elif pval < 0.01/2:
+        tau_scatter.draw_text(0.5, 5, '**')
+    elif pval < 0.05/2:
+        tau_scatter.draw_text(0.5, 5, '*')
+    else:
+        tau_scatter.draw_text(0.5, 5, 'ns')
+    effect_size = cohens_d(taus_per_fish[:, 1], taus_per_fish[:, 0])
+    print(f'Strong lumi contrast vs medium lumi contrast, pval {pval}: Cohen D effect size {effect_size}')
+
+    # We check whether there is a signficant increase in the timeconstant of weak vs medium contrasts. The pval is Bonferonni corrected for 2 tests.
+    tau_scatter.draw_line([1, 1, 2, 2], [5.2, 5.3, 5.3, 5.2], lc='k')
+    _, pval = ttest_rel(taus_per_fish[:, 2], taus_per_fish[:, 1], alternative='greater')
+    if pval < 0.001/2:
+        tau_scatter.draw_text(1.5, 5.5, '***')
+    elif pval < 0.01/2:
+        tau_scatter.draw_text(1.5, 5.5, '**')
+    elif pval < 0.05/2:
+        tau_scatter.draw_text(1.5, 5.5, '*')
+    else:
+        tau_scatter.draw_text(1.5, 5.5, 'ns')
+    effect_size = cohens_d(taus_per_fish[:, 2], taus_per_fish[:, 1])
+    print(f'Medium lumi contrast vs Weak lumi contrast, pval {pval}: Cohen D effect size {effect_size}')
+
+
+    return
+
+def sub_plot_brain_region_overview(regions, regions_short_names, regions_obj_path, example_brain_xy_overview_plots, example_brain_yz_overview_plots):
+    '''
+    This function plots the brain cartoons with each analysed region highlighted.
+    This is related to Figure S3a.
+    :param regions: List of mapzebrain region names to plot.
+    :param regions_short_names: List of the short names of the same regions in regions. These short names are used as labels.
+    :param regions_obj_path: Path to the folder containing all region obj files.
+    :param example_brain_xy_overview_plots: List of Subfigures to plot the xy-view of each region in regions.
+    :param example_brain_yz_overview_plots: List of Subfigures to plot the yz-view of each region in regions.
+    '''
+    total_brain_regions = [
+        navis.read_mesh(fr'{regions_obj_path}\prosencephalon_(forebrain).obj', units='microns', output='volume'),
+        navis.read_mesh(fr'{regions_obj_path}\mesencephalon_(midbrain).obj', units='microns', output='volume'),
+        navis.read_mesh(fr'{regions_obj_path}\rhombencephalon_(hindbrain).obj', units='microns', output='volume')]
+    for r in range(len(regions)):
+        print(regions[r])
+        brain_regions = [navis.read_mesh(fr'{regions_obj_path}\{regions[r]}.obj', units='microns', output='volume'), ]
+        # Plot the full brain with highlighted reference brain regions as guide.
+        example_brain_xy_overview_plots[r].draw_navis_neuron(None, total_brain_regions, navis_view=('x', '-y'), lw=0.5, rasterized=True)
+        example_brain_xy_overview_plots[r].draw_navis_neuron(None, brain_regions, navis_color='gray', navis_view=('x', '-y'), lw=0.5, rasterized=True)
+        example_brain_yz_overview_plots[r].draw_navis_neuron(None, total_brain_regions, navis_view=('z', '-y'), lw=0.5, rasterized=True)
+        example_brain_yz_overview_plots[r].draw_navis_neuron(None, brain_regions, navis_color='gray', navis_view=('z', '-y'), lw=0.5, rasterized=True)
+        example_brain_xy_overview_plots[r].draw_text(0, 0, regions_short_names[r+1], textlabel_ha='left')
+    return
+
+def sub_plot_n_neurons_per_region(traces_df, perc_neurons_plot_bottom, perc_neurons_plot_top, regions, regions_short_names,
                                   regions_path, thresh_resp=0.2, thresh_min=0.1, thresh_peaks_diff=1.25, thresh_peaks=1.5, thresh_below=0.9):
     '''
     This figure plots the total number of functional type neurons. And the percentage of functional type neurons per region per fish.
     This is related to Figure 3h and S3a
     :param traces_df: Dataframe with all functional traces. Each row contains one neuron.
-    :param n_neurons_plot: Subfigure with the number of neurons per region (Fig. 3h).
     :param perc_neurons_plot_bottom:  subfigure with the percentage of functional type neurons per region per fish. Up from 2 % (the y-axis is split to accommodate for high percentages in several regions).
     :param perc_neurons_plot_top: subfigure with the percentage of functional type neurons per region per fish. Up to 2 % (the y-axis is split to accommodate for high percentages in several regions).
     :param regions: List of mapzebrain region names to plot.
@@ -1568,46 +1770,6 @@ def sub_plot_n_neurons_per_region(traces_df, n_neurons_plot, perc_neurons_plot_b
 
     # Load the regions
     region_masks = create_combined_region_npy_mask(regions_path, regions=regions)
-
-    # Load the dataframes for each functional type. See the general node under 'if __name__ is '__main__'' about the names of the functional types.
-    motion_left_df = logic_regression_left_motion(traces_df, thresh_resp=thresh_resp, thresh_min=thresh_min, shuffle_stim_idx=False)
-    drive_left_df = logic_regression_left_drive(traces_df, thresh_resp=thresh_resp, shuffle_stim_idx=False)
-    lumi_left_df = logic_regression_left_lumi(traces_df, thresh_resp=thresh_resp, thresh_below=thresh_below, thresh_min=thresh_min, shuffle_stim_idx=False)
-    diff_left_df = logic_regression_left_diff(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks_diff, shuffle_stim_idx=False)
-    bright_left_df = logic_regression_left_bright(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks, thresh_min=thresh_min, shuffle_stim_idx=False)
-    dark_left_df = logic_regression_left_dark(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks, thresh_min=thresh_min, shuffle_stim_idx=False)
-    motion_right_df = logic_regression_right_motion(traces_df, thresh_resp=thresh_resp, thresh_min=thresh_min, shuffle_stim_idx=False)
-    drive_right_df = logic_regression_right_drive(traces_df, thresh_resp=thresh_resp, shuffle_stim_idx=False)
-    lumi_right_df = logic_regression_right_lumi(traces_df, thresh_resp=thresh_resp, thresh_below=thresh_below, thresh_min=thresh_min, shuffle_stim_idx=False)
-    diff_right_df = logic_regression_right_diff(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks_diff, shuffle_stim_idx=False)
-    bright_right_df = logic_regression_right_bright(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks, thresh_min=thresh_min, shuffle_stim_idx=False)
-    dark_right_df = logic_regression_right_dark(traces_df, thresh_resp=thresh_resp, thresh_peaks=thresh_peaks, thresh_min=thresh_min, shuffle_stim_idx=False)
-
-    # Loop over all functional types and combine the left and right version.
-    print('Found all neurons. ')
-    for count, (left_df, right_df, type_color) in enumerate(zip([motion_left_df, drive_left_df, lumi_left_df, diff_left_df, bright_left_df, dark_left_df],
-                                                                [motion_right_df, drive_right_df, lumi_right_df, diff_right_df, bright_right_df, dark_right_df],
-                                                                ['#359B73', '#2271B2', '#E69F00', '#D55E00', '#F748A5', '#9F0162',])):
-        # Label by the neurons by region based on their location.
-        mask_left = np.zeros((621, 1406, 138))
-        mask_left[left_df['ZB_x'].astype(int), left_df['ZB_y'].astype(int), left_df['ZB_z'].astype(int)] = 1
-        mask_right = np.zeros((621, 1406, 138))
-        mask_right[right_df['ZB_x'].astype(int), right_df['ZB_y'].astype(int), right_df['ZB_z'].astype(int)] = 1
-        overlap = np.append(region_masks[mask_left.astype(bool)], region_masks[mask_right.astype(bool)])
-
-        # Sort the regions from most to least common. Select the top 3.
-        most_common_regions_idx = np.argsort(np.bincount(overlap.astype(int)))[-3:][::-1]
-        # Region idx 0 belongs to 'No region found'. Sanity check in case 'no region found' is among the top 3, then select the top 4 and remove 'no region found'.
-        if 0 in most_common_regions_idx:
-            most_common_regions_idx = np.argsort(np.bincount(overlap.astype(int)))[-4:][::-1]
-            most_common_regions_idx = most_common_regions_idx[np.where(most_common_regions_idx != 0)[0]]
-        most_common_regions_cnt = np.bincount(overlap.astype(int))[most_common_regions_idx]
-        most_common_regions = np.array(regions_short_names)[most_common_regions_idx]
-
-        # Plot the number of neurons of the 3 most common regions for each functional type. Add the region label to the x-axis.
-        n_neurons_plot.draw_vertical_bars(np.arange(3) + count * 4, most_common_regions_cnt, lc=type_color)
-        for r in range(3):
-            n_neurons_plot.draw_text(r + count * 4, -10, most_common_regions[r], textlabel_rotation=90, textlabel_va='top')
 
     # Loop over all fish to find the percentage of functional type neurons per region per fish.
     avg_over_fish = np.nan * np.ones((len(np.unique(traces_df['fish_idx'])), len(regions), 6))
@@ -2049,6 +2211,8 @@ if __name__ == '__main__':
     path_to_traces = rf'{fig_3_folder_path}\imaging_traces_baseline.csv'
     # Get the path to the csv file containing all average traces per neuron reshuffled from the motion_off_luminance_off stimulus.
     path_to_traces_control = rf'{fig_3_folder_path}\imaging_traces_control_baseline.csv'
+    # Get the path to the csv file containing all average traces per neuron for the luminance integration experiment.
+    path_to_lumiint_traces = rf'{fig_3_folder_path}\imaging_traces_lumi_integrator.csv'
     # Get the path to the mapzebrain regions
     regions_path = rf'{fig_3_folder_path}\all_masks_indexed.hdf5'
 
@@ -2087,13 +2251,14 @@ if __name__ == '__main__':
     # Load the traces and control traces dataframe.
     traces_df = pd.read_csv(path_to_traces)
     traces_control_df = pd.read_csv(path_to_traces_control)
+    traces_lumiint_df = pd.read_csv(path_to_lumiint_traces)
 
     print('Traces are loaded. ')
 
     # Here we define the figures and subpanel outlines (e.g. the limits, ticks and labels of the axes) beloning to figure 3, S3 and S4.
     fig = Figure(fig_width=18, fig_height=17)
     sup_fig_3 = Figure(fig_width=18, fig_height=17)
-    sup_fig_4 = Figure(fig_width=18, fig_height=17)
+    sup_fig_4 = Figure(fig_width=18, fig_height=18)
 
     # Fig. 3c
     example_stack_plot = fig.create_plot(xpos=3.75, ypos=14.9, plot_height=2, plot_width=2, axis_off=True,
@@ -2117,40 +2282,34 @@ if __name__ == '__main__':
     subfigs_traces = create_traces_subplots(fig)
 
     # Fig. S4d
-    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=7.3, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
+    sup_subfigs_traces_wta = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=8.3, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, wta=True)
 
     # Fig. S4a
-    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
+    sup_subfigs_traces_linreg = create_traces_subplots(sup_fig_4, x_l=4.2, y_t=16.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5, ymax_extra=0.2)
 
     # Fig. S4c
-    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_4, x_l=13.1, y_t=15.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
+    sup_subfigs_traces_ctrl = create_traces_subplots(sup_fig_4, x_l=13.1, y_t=16.5, x_ss=0.75, x_bs=2.5, y_ss=0.75, y_bs=2.5)
 
     # Fig. 3f
     subfigs_locs = create_locs_subplots(fig)
 
     # Fig. 3g
-    loc_comb_plot = fig.create_plot(xpos=0.1, ypos=4.5, plot_height=3, plot_width=3, axis_off=True,
+    loc_comb_plot = fig.create_plot(xpos=0.5, ypos=4.5, plot_height=3.5, plot_width=3.5, axis_off=True,
                                     xmin=30, xmax=800, ymin=850, ymax=80)
-    loc_comb_s_plot = fig.create_plot(xpos=3.25, ypos=4.5, plot_height=3, plot_width=3, axis_off=True,
+    loc_comb_s_plot = fig.create_plot(xpos=0.5, ypos=0.5, plot_height=3.5, plot_width=3.5, axis_off=True,
                                     xmin=30, xmax=800, ymin=850, ymax=80)
 
     # Fig. S4a
-    sup_loc_comb_plot_linreg = sup_fig_4.create_plot(xpos=0.1, ypos=9.2, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_linreg = sup_fig_4.create_plot(xpos=0.1, ypos=10.2, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
     # Fig. S4c
-    sup_loc_comb_plot_ctrl = sup_fig_4.create_plot(xpos=14.8, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_ctrl = sup_fig_4.create_plot(xpos=14.8, ypos=6.7, plot_height=3, plot_width=3, axis_off=True,
                                                    xmin=30, xmax=800, ymin=850, ymax=80)
     # Fig. S4d
-    sup_loc_comb_plot_wta = sup_fig_4.create_plot(xpos=9.1, ypos=5.7, plot_height=3, plot_width=3, axis_off=True,
+    sup_loc_comb_plot_wta = sup_fig_4.create_plot(xpos=9.1, ypos=6.7, plot_height=3, plot_width=3, axis_off=True,
                                                      xmin=30, xmax=800, ymin=850, ymax=80)
 
-    # Fig. 3h
-    n_neurons_plot = fig.create_plot(xpos=1, ypos=2.2, plot_height=2.25, plot_width=5.25,
-                                     xmin=-2, xmax=24, ymin=0, ymax=120,
-                                     xticks=[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18, 20, 21, 22,],
-                                     xticklabels=[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',],
-                                     yticks=[0, 25, 50, 75, 100], yl='neurons per region')
-    # Fig. S4a (The y-axis is split at 2% therefore we need two plots)
+    # Fig. S3a (The y-axis is split at 2% therefore we need two plots)
     perc_neurons_plot_bottom = sup_fig_3.create_plot(xpos=1, ypos=13, plot_height=2.5, plot_width=16.75, #5.25
                                          xmin=-1, xmax=91, ymin=0, ymax=2,
                                          xticks=np.arange(90),
@@ -2160,8 +2319,30 @@ if __name__ == '__main__':
                                          xmin=-2, xmax=92, ymin=2, ymax=12,
                                          yticks=[5, 10,])
 
+    example_brain_xy_overview_plots = [[]] * len(regions)
+    example_brain_yz_overview_plots = [[]] * len(regions)
+    for r in range(len(regions)):
+        xr = r%7
+        yr = int(r/7)
+        example_brain_xy_overview_plots[r] = sup_fig_3.create_plot(xpos=1+2.2*xr, ypos=8.5-2*yr, plot_height=2, plot_width=2 / 2.274, axis_off=True)
+        example_brain_yz_overview_plots[r] = sup_fig_3.create_plot(xpos=2+2.2*xr, ypos=8.5-2*yr, plot_height=2, plot_width=2 / 4.395, axis_off=True)
+
+    # Fig. S3b
+    subfigs_traces_lumiint = create_lumiint_traces_subplots(sup_fig_3, x_l=0.5, y_t=4)
+
+    # Fig. S3c
+    loc_plot_lumiint = sup_fig_3.create_plot(xpos=4, ypos=2, plot_height=3, plot_width=3, axis_off=True, xmin=30, xmax=800, ymin=850, ymax=80)
+
+    # Fig. S3d
+    tau_scatter_lumiint = sup_fig_3.create_plot(xpos=9, ypos=1, plot_height=5., plot_width=4.,
+                                  xmin=-1, xmax=3, ymin=0, ymax=6,
+                                  yticks=[0, 1, 2, 3, 4, 5],
+                                  xticks=[0, 1, 2,],
+                                  xticklabels=['strong', 'medium', 'weak', ],
+                                  yl='timeconstant (s)')
+
     # Fig. S4b
-    sup_subfigoverlap = sup_fig_4.create_plot(xpos=10, ypos=11.1, plot_height=5.1, plot_width=2.2,
+    sup_subfigoverlap = sup_fig_4.create_plot(xpos=10, ypos=12.1, plot_height=5.1, plot_width=2.2,
                                               xmin=-1, xmax=11, ymin=0, ymax=1200,
                                               yticks=[0, 250, 500, 750, 1000],
                                               xticks=[0, 1, 3, 4, 6, 7, 9, 10],
@@ -2198,7 +2379,11 @@ if __name__ == '__main__':
     # Plot the control traces and locations per functional type (Fig. 3g, S4b)
     sub_plot_control(traces_df, traces_control_df, loc_comb_s_plot, sup_subfigoverlap)
     # Plot the number of neurons per region and the percentage of functional type neurons per region per fish (Fig. 3h, S4e).
-    sub_plot_n_neurons_per_region(traces_df, n_neurons_plot, perc_neurons_plot_bottom, perc_neurons_plot_top, regions, regions_short_names, regions_path)
+    sub_plot_n_neurons_per_region(traces_df, perc_neurons_plot_bottom, perc_neurons_plot_top, regions, regions_short_names, regions_path)
+    # Plot the brain region cartoons examined in (Fig. s3a).
+    sub_plot_brain_region_overview(regions, regions_short_names, fig_3_folder_path, example_brain_xy_overview_plots, example_brain_yz_overview_plots)
+    # Plot the lumi integrator check (Fig. S3b-d)
+    subplot_lumi_integrator_check(traces_lumiint_df, subfigs_traces_lumiint, loc_plot_lumiint, tau_scatter_lumiint)
     # Plot the linear regression based traces and locations (Fig. S4a-b)
     sub_plot_linear_regression_traces(traces_df, sup_subfigs_traces_linreg, sup_loc_comb_plot_linreg, sup_subfigoverlap,
                                      model_params=model_params_linreg)
@@ -2215,7 +2400,7 @@ if __name__ == '__main__':
     # Plot the overview of the comparison between logical statements and linear regression based on synthetic data
     plot_overview_logical_statements_vs_linear_regression(noise_levels_full, overview_plot_diff, overview_plot_lumi)
 
-    fig.save(fig_save_path)
+    # fig.save(fig_save_path)
     sup_fig_3.save(supfig_save_path)
     sup_fig_4.save(supfig2_save_path)
 
