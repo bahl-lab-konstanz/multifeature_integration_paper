@@ -2394,12 +2394,12 @@ if __name__ == '__main__':
     sub_plot_add_model_prediction_to_traces(sup_subfigs_traces_ctrl, model_params)
     # Add the model prediction to the WTA traces (Fig. S4d)
     sub_plot_add_model_prediction_to_traces(sup_subfigs_traces_wta, model_params, wta=True)
-    # Plot the synthetic example data for multiple noise-levels
+    # Plot the synthetic example data for multiple noise-levels (Fig. S4e-f)
     plot_example_synthetic_data(noise_levels_example_data, subfigs_diff_traces, subfigs_lumi_traces)
-    # Plot the overview of the comparison between logical statements and linear regression based on synthetic data
+    # Plot the overview of the comparison between logical statements and linear regression based on synthetic data (Fig. S4g-h)
     plot_overview_logical_statements_vs_linear_regression(noise_levels_full, overview_plot_diff, overview_plot_lumi)
 
-    # fig.save(fig_save_path)
+    fig.save(fig_save_path)
     sup_fig_3.save(supfig_save_path)
     sup_fig_4.save(supfig2_save_path)
 
