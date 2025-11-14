@@ -402,65 +402,6 @@ def avg_mot_lumi_change_full_node_outputs(model_input, tau_mot=4.26, tau_ph_eye=
             w_repulsor_pos * repulsion_from_left, w_repulsor_pos * repulsion_from_right,
             left_integrated_drive, right_integrated_drive, swims_to_left_tot_rw)
 
-def avg_mot_lumi_change_nomfint(model_input, tau_mot=4.26, tau_ph_eye=12.66, tau_ph_rep=12.66,
-                                w_mot=2.783, w_attractor_pos=0.126, w_repulsor_pos=1.857):
-    '''
-    This function contains the additive model with motion, luminance level and changes in luminance. In this model the multifeature neurons simply add without temporal integration.
-    :param model_input: List of 5 input arrays (time, motion left, motion right, luminance left, luminance right).
-    :param tau_mot: Timeconstant of the motion integrator.
-    :param tau_ph_eye: Timeconstant of the luminance level integrator.
-    :param tau_ph_rep: Timeconstant of the integrator in the luminance change pathway.
-    :param w_mot: Weight of the motion pathway
-    :param w_attractor_pos: Weight of the luminance level pathway.
-    :param w_repulsor_pos: Weight of the luminance change pathway.
-    :return: Curve matching the percentage left swims over time.
-    '''
-    # We add some baseline activity to both multifeature nodes to avoid division by zero. Since both nodes contain this baseline, it doesn't affect the percentage left swims.
-    baseline = 1
-
-    time, left_input_mot, right_input_mot, left_input_ph, right_input_ph = model_input
-
-    # Integrate motion
-    exp_kernel_mot = np.concatenate((np.zeros(150), 1 / tau_mot * np.exp(-np.linspace(0, 150, 151) / tau_mot)))
-    exp_kernel_mot = exp_kernel_mot / np.sum(exp_kernel_mot)
-    left_integrated_mot = convolve1d(left_input_mot, exp_kernel_mot)
-    right_integrated_mot = convolve1d(right_input_mot, exp_kernel_mot)
-
-    # Integrate luminance for each eye
-    exp_kernel_ph_eye = np.concatenate((np.zeros(150), 1 / tau_ph_eye * np.exp(-np.linspace(0, 150, 151) / tau_ph_eye)))
-    exp_kernel_ph_eye = exp_kernel_ph_eye / np.sum(exp_kernel_ph_eye)
-    left_integrated_ph = convolve1d(left_input_ph, exp_kernel_ph_eye)
-    right_integrated_ph = convolve1d(right_input_ph, exp_kernel_ph_eye)
-
-    # Calculate repulsion force
-    exp_kernel_ph_rep = np.concatenate((np.zeros(150), 1 / tau_ph_rep * np.exp(-np.linspace(0, 150, 151) / tau_ph_rep)))
-    exp_kernel_ph_rep = exp_kernel_ph_rep / np.sum(exp_kernel_ph_rep)
-    left_integrated_rep = convolve1d(left_input_ph, exp_kernel_ph_rep)
-    right_integrated_rep = convolve1d(right_input_ph, exp_kernel_ph_rep)
-
-    dark_left = np.clip(left_integrated_rep - left_input_ph, 0, np.inf)
-    dark_right = np.clip(right_integrated_rep - right_input_ph, 0, np.inf)
-    bright_left = np.clip(left_input_ph - left_integrated_rep, 0, np.inf)
-    bright_right = np.clip(right_input_ph - right_integrated_rep, 0, np.inf)
-    repulsion_from_left = bright_left + dark_left
-    repulsion_from_right = bright_right + dark_right
-
-    # Compute the linear weighted sum to go into the multifeature (drive) node.
-    left_integrated_drive = w_mot * left_integrated_mot + w_repulsor_pos * repulsion_from_right + baseline + w_attractor_pos * left_integrated_ph
-    right_integrated_drive = w_mot * right_integrated_mot + w_repulsor_pos * repulsion_from_left + baseline + w_attractor_pos * right_integrated_ph
-
-    # Get the ratio leftward swims
-    swims_to_left_tot = ((left_integrated_drive - right_integrated_drive) / (
-                left_integrated_drive + right_integrated_drive) + 1) / 2
-
-    # Apply a rolling window to match the data preprocessing and transform ratios to percentages.
-    swims_to_left_tot_rw = rolling_end_window(swims_to_left_tot, 20)
-    swims_to_left_tot_rw = swims_to_left_tot_rw * 100
-    swims_to_left_tot_rw[np.isinf(swims_to_left_tot_rw)] = 50
-    swims_to_left_tot_rw[np.isnan(swims_to_left_tot_rw)] = 50
-
-    return swims_to_left_tot_rw
-
 def avg_mot_lumi_change_withmotinhib(model_input, tau_mot=4.26, tau_ph_eye=12.66, tau_ph_rep=12.66, tau_drive=6.46,
                         w_mot=2.783, w_attractor_pos=0.126, w_repulsor_pos=1.857, w_mot_inhib=0):
     '''
@@ -1412,9 +1353,9 @@ def sub_plot_modelling_overview_mse_tau_w(n_training_rounds, subfig_mse_btm, sub
 
     # Loop over all supplemental-figure alternative models to train them using unifeature training/testing and plot their performance.
     for model_counter, (modelfunction, pl_color, param_size) in enumerate(zip(
-            [avg_mot_lumi_change, avg_mot_lumi_change_nomfint, avg_mot_lumi_change_withmotinhib],
-            ['cyan', 'tab:blue', 'green'],
-            [7, 6, 8])):
+            [avg_mot_lumi_change, avg_mot_lumi_change_withmotinhib],
+            ['cyan', 'green'],
+            [7, 8])):
 
         print(f'Running model {model_counter} unifeature training')
         # Training the model using unifeature training/testing
@@ -1468,9 +1409,9 @@ def sub_plot_modelling_overview_mse_tau_w(n_training_rounds, subfig_mse_btm, sub
         print(f'model1 {model1} vs model2 {model2}, pval {pval}: Cohen D effect size {effect_size}')
 
     # Do the statistical comparisons between the supplemental-figure model fits using a t-test. The pval is compared to a Bonferonni corrected threshold.
-    for model1, model2, h in zip([5, 5],
-                                 [6, 7],
-                                 [40, 60]):
+    for model1, model2, h in zip([5,],
+                                 [6,],
+                                 [60,]):
         subfig_mse_sup.draw_line([model1 - 4, model1 - 4, model2 - 4, model2 - 4], [h-1, h, h, h-1], lc='k')
         _, pval = ttest_ind(model_test_mses[model1], model_test_mses[model2])
         if pval < 0.001/2:
@@ -1595,8 +1536,8 @@ if __name__ == '__main__':
 
     # Fig. S2d
     plot_mse_overview_sup = subfig.create_plot(xpos=16, ypos=2.5, plot_height=1.6, plot_width=2,
-                                        xmin=0, xmax=4, ymin=0, ymax=65, yticks=[10, 20, 30, 40, 50], yl='MSE',
-                                        xticks=[1, 2, 3], xticklabels=['unifeature\ntesting', 'X MF int', '+ Mot inhi'], xticklabels_rotation=90)
+                                        xmin=0, xmax=3, ymin=0, ymax=65, yticks=[10, 20, 30, 40, 50], yl='MSE',
+                                        xticks=[1, 3], xticklabels=['unifeature\ntesting', '+ Mot inhi'], xticklabels_rotation=90)
 
     # Fig. 2i
     plot_timeconstants_overview = fig.create_plot(xpos=12, ypos=7.5, plot_height=2.5, plot_width=2.25,
