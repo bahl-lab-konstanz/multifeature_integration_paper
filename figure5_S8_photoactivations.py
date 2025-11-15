@@ -1388,25 +1388,25 @@ if __name__ == '__main__':
     PA_quality_HD_sizes = [350, 350, 175, 175, 175, 350, 350, 350]
 
     # Prepare the figures for Figure 5 and S8.
-    fig = Figure(fig_width=18, fig_height=17, dpi=900)
+    fig = Figure(fig_width=18, fig_height=14.5, dpi=900)
     supfig = Figure(fig_width=18, fig_height=17)
 
-    # Fig. 5a
-    nrrd_plot = fig.create_plot(xpos=0.1, ypos=14.25, plot_height=2.3, plot_width=2.3, axis_off=True, xmin=30, xmax=800,
+    # Fig. S5a
+    nrrd_plot = supfig.create_plot(xpos=0.7, ypos=14.25, plot_height=2.3, plot_width=2.3, axis_off=True, xmin=30, xmax=800,
                                 ymin=850, ymax=80)
-    all_neurons_xy = fig.create_plot(xpos=1.4, ypos=14.25, plot_height=2.3, plot_width=2.3 * 1.5525, axis_off=True)
-    all_neurons_yz = fig.create_plot(xpos=3.2, ypos=14.25, plot_height=2.3, plot_width=2.3 / 1.1565, axis_off=True)
+    all_neurons_xy = supfig.create_plot(xpos=0.1, ypos=11.75, plot_height=2.3, plot_width=2.3 * 1.5525, axis_off=True)
+    all_neurons_yz = supfig.create_plot(xpos=1.9, ypos=11.75, plot_height=2.3, plot_width=2.3 / 1.1565, axis_off=True)
 
-    # Fig. 5b
+    # Fig. S5b
     xy_plots = [[]] * 4
     yz_plots = [[]] * 4
     for i in range(4):
-        xy_plots[i] = fig.create_plot(xpos=3.75 + i * 3.25, ypos=14.25, plot_height=2.3, plot_width=2.3 * 1.5525,
+        xy_plots[i] = supfig.create_plot(xpos=0.1, ypos=9.25 - 2.5 * i, plot_height=2.3, plot_width=2.3 * 1.5525,
                                       axis_off=True)
-        yz_plots[i] = fig.create_plot(xpos=5.55 + i * 3.25, ypos=14.25, plot_height=2.3, plot_width=2.3 / 1.1565,
+        yz_plots[i] = supfig.create_plot(xpos=1.9, ypos=9.25 - 2.5 * i, plot_height=2.3, plot_width=2.3 / 1.1565,
                                       axis_off=True)
 
-    # Fig. 5c
+    # Fig. 5a
     example_loc_plot_zoomout = fig.create_plot(xpos=3.5, ypos=11, plot_height=2., plot_width=2., axis_off=True,
                                                xmin=0, xmax=800, ymin=800, ymax=0, )
     example_loc_plot_zoominpre = fig.create_plot(xpos=5.75, ypos=11.55, plot_height=1.45, plot_width=1.45,
@@ -1434,11 +1434,11 @@ if __name__ == '__main__':
     example_brain_yz_overview_plot = fig.create_plot(xpos=11.8, ypos=9.6, plot_height=2, plot_width=2 / 4.395,
                                                      axis_off=True)
 
-    # Fig. 5d
+    # Fig. 5b
     all_neurons_xy_plot = fig.create_plot(xpos=12.5, ypos=10, plot_height=2.5, plot_width=2.5 * 1.5525, axis_off=True)
     all_neurons_yz_plot = fig.create_plot(xpos=15.75, ypos=10, plot_height=2.5, plot_width=2.5 / 1.1565, axis_off=True)
 
-    # Fig. 5e
+    # Fig. 5c
     mot_functional_plot = fig.create_plot(xpos=0.5, ypos=6.5, plot_height=1, plot_width=3,
                                           xmin=-5, xmax=385, ymin=-1, ymax=12,
                                           vspans=[[20, 80, 'lightgray', 1.0], [150, 210, 'lightgray', 1.0],
@@ -1476,17 +1476,17 @@ if __name__ == '__main__':
     dark_xy_plot = fig.create_plot(xpos=3.75, ypos=3.5, plot_height=1., plot_width=1.5525, axis_off=True)
     dark_yz_plot = fig.create_plot(xpos=5.25, ypos=3.5, plot_height=1., plot_width=1 / 1.1565, axis_off=True)
 
-    # Fig. S8c
+    # Fig. S8e
     brain_region_plots = [[]] * 6
     for type in range(6):
         if type == 0:
-            brain_region_plots[type] = supfig.create_plot(xpos=6.25, ypos=14 - type * 2, plot_height=1.5, plot_width=4,
+            brain_region_plots[type] = supfig.create_plot(xpos=9.75, ypos=14 - type * 2, plot_height=1.5, plot_width=4,
                                                           yticks=[0.0, 0.5, 1.0],
                                                           yl='nodes in region (ratio per neuron)', xmin=-1,
                                                           xmax=len(detailed_brain_regions), ymin=-0.05, ymax=1.05,
                                                           vspans=[[4.5, 14.5, 'lightgray', 1.0], ])
         elif type == 5:
-            brain_region_plots[type] = supfig.create_plot(xpos=6.25, ypos=14 - type * 2, plot_height=1.5,
+            brain_region_plots[type] = supfig.create_plot(xpos=9.75, ypos=14 - type * 2, plot_height=1.5,
                                                           plot_width=4, xticks=np.arange(len(detailed_brain_regions)),
                                                           xticklabels=short_names_brain_regions[::-1],
                                                           yticks=[0.0, 0.5, 1.0], xticklabels_rotation=90,
@@ -1495,13 +1495,13 @@ if __name__ == '__main__':
                                                           vspans=[[4.5, 14.5, 'lightgray', 1.0], ])
 
         else:
-            brain_region_plots[type] = supfig.create_plot(xpos=6.25, ypos=14 - type * 2, plot_height=1.5, plot_width=4,
+            brain_region_plots[type] = supfig.create_plot(xpos=9.75, ypos=14 - type * 2, plot_height=1.5, plot_width=4,
                                                           yticks=[0.0, 0.5, 1.0],
                                                           xmin=-1, xmax=len(detailed_brain_regions), ymin=-0.05,
                                                           ymax=1.05,
                                                           vspans=[[4.5, 14.5, 'lightgray', 1.0], ])
 
-    # Fig. 5f
+    # Fig. 5d
     anterior_vs_contra_count_plot = fig.create_plot(xpos=6.5, ypos=6, plot_height=3, plot_width=1.25, axis_off=True,
                                                     xmin=0, xmax=5, ymin=0, ymax=1, yl='proportion neurons')
     anterior_xy_plot = fig.create_plot(xpos=8.8, ypos=7.5, plot_height=1.5, plot_width=1.5 * 1.5525, axis_off=True)
@@ -1521,33 +1521,33 @@ if __name__ == '__main__':
     local_xy_mot_plot = fig.create_plot(xpos=14.8, ypos=6, plot_height=1.5, plot_width=1.5 * 1.5525, axis_off=True)
     local_yz_mot_plot = fig.create_plot(xpos=16.8, ypos=6, plot_height=1.5, plot_width=1.5 / 1.1565, axis_off=True)
 
-    # Fig. 5g
+    # Fig. 5e
     drive_change_neurons_xy_plot = fig.create_plot(xpos=6.4, ypos=3.5, plot_height=2., plot_width=2, axis_off=True)
     drive_change_neurons_yz_plot = fig.create_plot(xpos=8.5, ypos=3.5, plot_height=2, plot_width=2, axis_off=True)
     drive_lumi_neurons_xy_plot = fig.create_plot(xpos=6.4, ypos=1.5, plot_height=2., plot_width=2, axis_off=True)
     drive_lumi_neurons_yz_plot = fig.create_plot(xpos=8.5, ypos=1.5, plot_height=2, plot_width=2, axis_off=True)
 
-    # Fig. S8a
+    # Fig. S8c
     plot_funcs = []
     plot_HDs = []
     for fig_idx, (func_size, HD_size) in enumerate(zip(PA_quality_func_sizes, PA_quality_HD_sizes)):
-        plot_func = supfig.create_plot(xpos=1, ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
+        plot_func = supfig.create_plot(xpos=4.5, ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
                                     xmin=0, xmax=2 * func_size, ymin=0., ymax=2 * func_size)
-        plot_HD = supfig.create_plot(xpos=3., ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
+        plot_HD = supfig.create_plot(xpos=6.5, ypos=14.5 - fig_idx * 1.8, plot_height=1.6, plot_width=1.6,
                                   xmin=0, xmax=2 * HD_size, ymin=0., ymax=2 * HD_size)
         plot_funcs = np.append(plot_funcs, plot_func)
         plot_HDs = np.append(plot_HDs, plot_HD)
 
-    # Fig. S8b
-    success_rate_plot = supfig.create_plot(xpos=1, ypos=0.5, ymin=0, ymax=2, xmin=0, xmax=1, plot_width=3.6, plot_height=1,
+    # Fig. S8d
+    success_rate_plot = supfig.create_plot(xpos=4.5, ypos=0.5, ymin=0, ymax=2, xmin=0, xmax=1, plot_width=3.6, plot_height=1,
                                         xticks=[0, 0.25, 0.5, 0.75, 1], xticklabels=['0', '25', '50', '75', '100'],
                                         xl='amount (%)', legend_xpos=5., legend_ypos=1.5)
 
-    # Perform the mapzebrain analysis (Fig. 5a-b)
+    # Perform the mapzebrain analysis (Fig. S5a-b)
     mapzebrain_neuron_analysis(path_to_swc_folder_ahb, path_to_swc_folder_tectum, mapzebrain_nrrd_paths, nrrd_plot,
                                all_neurons_xy, all_neurons_yz, xy_plots, yz_plots, masks_path, regions_path)
 
-    # Create the method outline plot with one example neuron (Fig. 5c).
+    # Create the method outline plot with one example neuron (Fig. 5a).
     sub_plot_method_outline_PA(example_func_path, example_HD_path, example_volume_path, example_swc_path,
                                example_loc_plot_zoomout, example_loc_plot_zoominpre, example_loc_plot_zoominpost,
                                example_traces_plot, example_tracings_plots, example_neuron_xy_plot,
@@ -1557,12 +1557,12 @@ if __name__ == '__main__':
                                zs=[28, 26, 25, 23],
                                masks_path=masks_path)  # xs, ys, zs are the centers of the zoomed-in following of the PAed neuron under ' volumetric imaging' in Fig. 5c.
 
-    # Plot all the PAed neurons (Fig. 5d)
+    # Plot all the PAed neurons (Fig. 5b)
     subfig_all_PA_neurons_loc(all_neurons_xy_plot, all_neurons_yz_plot, brain_region_plots, fig_5_folder_path,
                               all_volume_file_base_names, all_cell_folders, all_swc_ids, all_plot_colors,
                               detailed_brain_regions, masks_path, regions_path, video_path=video_path_PA)
 
-    # Plot the functional traces and location per functional type (Fig. 5e)
+    # Plot the functional traces and location per functional type (Fig. 5c)
     subfig_PA_functional_loc(mot_functional_plot, mot_xy_plot, mot_yz_plot, fig_5_folder_path, mot_file_base_names,
                              mot_volume_file_base_names, mot_cell_folders, mot_cell_mask_IDs, mot_swc_ids, masks_path,
                              z_planes=mot_z_planes, plot_color='#359B73', plot_color_2='#8DCDB4')
@@ -1585,7 +1585,7 @@ if __name__ == '__main__':
                              masks_path, z_planes=dark_z_planes, plot_color='#9F0162', plot_color_2='#CC7CAD',
                              timescalebar=True)
 
-    # Plot the morphological types for the multifeature and motion neurons (Fig. 5f)
+    # Plot the morphological types for the multifeature and motion neurons (Fig. 5d)
     subfig_group_of_neurons(anterior_xy_mot_plot, anterior_yz_mot_plot, contralateral_xy_mot_plot,
                             contralateral_yz_mot_plot, local_xy_mot_plot, local_yz_mot_plot,
                             anterior_vs_contra_count_plot, 2, fig_5_folder_path, mot_volume_file_base_names,
@@ -1595,12 +1595,12 @@ if __name__ == '__main__':
                             anterior_vs_contra_count_plot, 1, fig_5_folder_path, drive_volume_file_base_names,
                             drive_cell_folders, drive_swc_ids, drive_type, '#2271B2', masks_path)
 
-    # Plot the zoom-in lumi-change, lumi-integrator and multifeature neurons that might connect (Fig. 5g).
+    # Plot the zoom-in lumi-change, lumi-integrator and multifeature neurons that might connect (Fig. 5e).
     subfig_zoomin_neurons(drive_change_neurons_xy_plot, drive_change_neurons_yz_plot, drive_lumi_neurons_xy_plot,
                           drive_lumi_neurons_yz_plot, fig_5_folder_path,
                           zoomin_volume_file_base_names, zoomin_cell_folders, zoomin_swc_ids, zoomin_types)
 
-    # Plot the 8 example neurons for mapping quality checks (Fig. S8a-b)
+    # Plot the 8 example neurons for mapping quality checks (Fig. S8c-d)
     PA_quality_check_figure(plot_funcs, plot_HDs, success_rate_plot, fig_5_folder_path, PA_quality_cell_folders,
                             PA_quality_file_paths_functional, PA_quality_cell_ids, PA_quality_extra_cell_ids,
                             PA_quality_file_paths_HD, PA_quality_HD_xs, PA_quality_HD_ys, PA_quality_HD_zs,
