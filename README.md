@@ -6,6 +6,7 @@ Katja Slangewal, Sophie Aimon, Maxim Q. Capelle, Florian Kämpf, Heike Naumann, 
 
 
 BioRxiv DOI: https://doi.org/10.1101/2025.08.12.669772
+Nature Communications DOI: TBA
 
 ---
 First install the mf_env python environment using the yml file in this package. 
@@ -13,25 +14,28 @@ First install the mf_env python environment using the yml file in this package.
 The code and corresponding data is split per figure. 
 
 Before starting, download the data here:
+DOI: TBA
+
 - Figure 1 and related supplementary figures (steady-state behavior):
-    - DOI:
+    - DOI: 10.48606/zxctk8418p6jku0t 
 - Figure 2 and related supplementary figures (temporal dynamics of behavior and modeling): 
-  - DOI:
-  - DOI:
-  - DOI:
-  - DOI:
-  - DOI:
+  - DOI: 10.48606/mrx3wcdmwp2ydbp3
+  - DOI: 10.48606/gsdv91dk3txcu07p
+  - DOI: 10.48606/y60mqtp15uaaqhee
+  - DOI: 10.48606/w3fhkq8cyu0gsp75
+  - DOI: 10.48606/q8crn50g7w03gr2e
 - Figure 3 and related supplementary figures (functional imaging):
-  - DOI:
-  - DOI: 
-  - DOI:
-  - DOI:
-  - DOI:
+  - DOI: 10.48606/9arfes38unq9gmqk 
+  - DOI: 10.48606/7x51pewfq70uf57k
+  - DOI: 10.48606/c8qj20ne5jysbsjb
+  - DOI: 10.48606/mhesrf4reyf4p6vy
+  - DOI: 10.48606/qnh8pbcj7uzk0gp8
+  - DOI: TBA
 - Figure 4 and related supplementary figures (functional imaging and HCR-FISH):
-  - DOI:
-  - DOI:
+  - DOI: 10.48606/j5yxjhb5qsddmcd1 
+  - DOI: 10.48606/50deukdtv74vf9b9
 - Figure 5 and related supplementary figures (functional imaging and paGFP photoactivations):
-  - DOI:
+  - DOI: 10.48606/9jpv6xzw8amdbp3j
 
 *Important*: merge the subpackages (_part1, _part2 etc) into one folder per figure, 
 thereby getting rid of the (_part1, _part2 etc) hierarchy. The subpackaging was necessary to limit the data-size per package.

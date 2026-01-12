@@ -663,17 +663,6 @@ def train_model_once(model_func, folder_names, stim_len_timepoints, stim_names, 
             p0 = [tau_mot, tau_ph_eye, tau_ph_rep, tau_drive, w_mot, w_attractor_pos, w_repulsor_pos,]
             bounds = ([0, 0, 0, 0, 0, 0, 0], [100, 100, 100, 100, 25, 25, 25])
 
-        elif model_func == avg_mot_lumi_change_nomfint:
-            tau_mot = np.random.uniform(0.1, 100)
-            tau_ph_eye = np.random.uniform(0.1, 100)
-            tau_ph_rep = np.random.uniform(0.1, 100)
-            w_mot = np.random.uniform(0.1, 25)
-            w_attractor_pos = np.random.uniform(0.1, 25)
-            w_repulsor_pos = np.random.uniform(0.1, 25)
-
-            p0 = [tau_mot, tau_ph_eye, tau_ph_rep, w_mot, w_attractor_pos, w_repulsor_pos,]
-            bounds = ([0, 0, 0, 0, 0, 0], [100, 100, 100, 25, 25, 25])
-
         elif model_func == avg_mot_lumi_change_withmotinhib:
             tau_mot = np.random.uniform(0.1, 100)
             tau_ph_eye = np.random.uniform(0.1, 100)
