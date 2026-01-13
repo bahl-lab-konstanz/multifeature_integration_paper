@@ -2,7 +2,7 @@ This code belongs to and can be used to reproduce all figures from:
 
 # Visuomotor decision-making through multifeature convergence in the larval zebrafish hindbrain #
 
-Katja Slangewal, Sophie Aimon, Maxim Q. Capelle, Florian Kämpf, Heike Naumann, Herwig Baier, Krasimir Slanchev, Armin Bahl
+Katja Slangewal, Sophie Aimon, Maxim Q. Capelle, Florian Kämpf, Heike Naumann, Krasimir Slanchev, Herwig Baier, Armin Bahl
 Nature Communications 2026
 
 ---
